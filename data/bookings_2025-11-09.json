@@ -1,0 +1,28 @@
+[
+    {
+        "name": "Test User",
+        "party_size": 2,
+        "date": "2025-11-09",
+        "start_time": "22:00",
+        "end_time": "24:00",
+        "duration": 120,
+        "table_id": 1
+    },
+    {
+        "name": "Alice Smith",
+        "party_size": 2,
+        "date": "2025-11-09",
+        "start_time": "18:30",
+        "end_time": "20:00",
+        "table_id": 1
+    },
+    {
+        "name": "Bob Johnson",
+        "party_size": 4,
+        "date": "2025-11-09",
+        "start_time": "19:00",
+        "end_time": "21:00",
+        "duration": 120,
+        "table_id": 3
+    }
+]

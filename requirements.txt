@@ -1,0 +1,9 @@
+# Web server and framework
+Flask
+gunicorn
+
+# Flask's core dependencies used by this app and its imports
+Jinja2
+Werkzeug
+itsdangerous
+click

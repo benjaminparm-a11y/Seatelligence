@@ -1,0 +1,135 @@
+{
+  "date": "2025-11-09",
+  "tables": [
+    {
+      "id": 1,
+      "seats": 2,
+      "x": 50,
+      "y": 50,
+      "width": 60,
+      "height": 60
+    },
+    {
+      "id": 2,
+      "seats": 2,
+      "x": 150,
+      "y": 50,
+      "width": 60,
+      "height": 60
+    },
+    {
+      "id": 3,
+      "seats": 4,
+      "x": 50,
+      "y": 150,
+      "width": 80,
+      "height": 80
+    },
+    {
+      "id": 4,
+      "seats": 4,
+      "x": 170,
+      "y": 150,
+      "width": 80,
+      "height": 80
+    },
+    {
+      "id": 5,
+      "seats": 6,
+      "x": 100,
+      "y": 270,
+      "width": 100,
+      "height": 100
+    }
+  ],
+  "bookings": [
+    {
+      "name": "Test User",
+      "party_size": 2,
+      "date": "2025-11-09",
+      "start_time": "22:00",
+      "end_time": "24:00",
+      "duration": 120,
+      "table_id": 1
+    },
+    {
+      "name": "Alice Smith",
+      "party_size": 2,
+      "date": "2025-11-09",
+      "start_time": "18:00",
+      "end_time": "19:30",
+      "duration": 90,
+      "table_id": 1
+    },
+    {
+      "name": "Bob Johnson",
+      "party_size": 4,
+      "date": "2025-11-09",
+      "start_time": "19:00",
+      "end_time": "21:00",
+      "duration": 120,
+      "table_id": 3
+    },
+    {
+      "name": "Carol Williams",
+      "party_size": 6,
+      "date": "2025-11-09",
+      "start_time": "20:00",
+      "end_time": "22:00",
+      "duration": 120,
+      "table_id": 5
+    }
+  ],
+  "constraints": {
+    "room": {
+      "width": 800,
+      "height": 600,
+      "name": "Main Dining Area"
+    },
+    "layout_rules": {
+      "min_gap_between_tables": 20,
+      "min_wall_clearance": 10,
+      "max_tables": 20
+    },
+    "no_go_zones": [
+      {
+        "name": "Kitchen Door",
+        "x": 0,
+        "y": 0,
+        "width": 80,
+        "height": 30
+      },
+      {
+        "name": "Bar Area",
+        "x": 700,
+        "y": 0,
+        "width": 100,
+        "height": 150
+      },
+      {
+        "name": "Restrooms",
+        "x": 0,
+        "y": 550,
+        "width": 100,
+        "height": 50
+      }
+    ],
+    "metadata": {
+      "version": "1.0",
+      "last_updated": "2025-11-09",
+      "notes": "Default restaurant layout constraints"
+    }
+  },
+  "capacity_metrics": {
+    "total_bookings": 4,
+    "total_guests": 14,
+    "total_capacity": 14,
+    "wasted_seats": 0,
+    "efficiency": 100.0
+  },
+  "metadata": {
+    "generated_at": "2025-11-09 15:08:56",
+    "total_tables": 5,
+    "total_bookings": 4
+  }
+}

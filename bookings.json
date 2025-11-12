@@ -1,0 +1,18 @@
+[
+    {
+        "name": "ben",
+        "party_size": 4,
+        "start_time": "19:00",
+        "end_time": "21:00",
+        "duration": 120,
+        "table_id": 3
+    },
+    {
+        "name": "Cecilie",
+        "party_size": 1,
+        "start_time": "06:00",
+        "end_time": "08:00",
+        "duration": 120,
+        "table_id": 1
+    }
+]

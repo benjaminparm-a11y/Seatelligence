@@ -1,0 +1,18 @@
+[
+    {
+        "name": "First Booking",
+        "party_size": 2,
+        "date": "2025-11-16",
+        "start_time": "18:00",
+        "end_time": "20:00",
+        "table_id": 1
+    },
+    {
+        "name": "Cec",
+        "party_size": 1,
+        "date": "2025-11-16",
+        "start_time": "19:00",
+        "end_time": "19:30",
+        "table_id": 2
+    }
+]

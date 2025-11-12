@@ -1,0 +1,27 @@
+[
+    {
+        "name": "Large Family Reunion",
+        "party_size": 8,
+        "date": "2025-11-10",
+        "start_time": "19:00",
+        "end_time": "21:00",
+        "duration": 120,
+        "table_id": null
+    },
+    {
+        "name": "Test API User",
+        "party_size": 2,
+        "date": "2025-11-10",
+        "start_time": "18:00",
+        "end_time": "19:30",
+        "table_id": 1
+    },
+    {
+        "name": "Test API User",
+        "party_size": 2,
+        "date": "2025-11-10",
+        "start_time": "18:00",
+        "end_time": "19:30",
+        "table_id": 2
+    }
+]

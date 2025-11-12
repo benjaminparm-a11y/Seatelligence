@@ -1,0 +1,4 @@
+[2025-11-12 15:04:52 +0100] [30932] [INFO] Starting gunicorn 23.0.0
+[2025-11-12 15:04:52 +0100] [30932] [INFO] Listening at: http://0.0.0.0:5003 (30932)
+[2025-11-12 15:04:52 +0100] [30932] [INFO] Using worker: sync
+[2025-11-12 15:04:52 +0100] [30978] [INFO] Booting worker with pid: 30978

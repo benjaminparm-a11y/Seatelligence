@@ -1,0 +1,40 @@
+{
+    "room": {
+        "width": 800,
+        "height": 600,
+        "name": "Main Dining Area"
+    },
+    "layout_rules": {
+        "min_gap_between_tables": 20,
+        "min_wall_clearance": 10,
+        "max_tables": 20
+    },
+    "no_go_zones": [
+        {
+            "name": "Kitchen Door",
+            "x": 0,
+            "y": 0,
+            "width": 80,
+            "height": 30
+        },
+        {
+            "name": "Bar Area",
+            "x": 700,
+            "y": 0,
+            "width": 100,
+            "height": 150
+        },
+        {
+            "name": "Restrooms",
+            "x": 0,
+            "y": 550,
+            "width": 100,
+            "height": 50
+        }
+    ],
+    "metadata": {
+        "version": "1.0",
+        "last_updated": "2025-11-09",
+        "notes": "Default restaurant layout constraints"
+    }
+}
