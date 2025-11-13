@@ -1,12 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Restaurant Booking</title>
-  <style>
-    body { font-family: sans-serif; margin: 20px; }
+<style>
+  body { font-family: sans-serif; margin: 20px; }
     
     .container {
       display: grid;
@@ -226,12 +221,11 @@
       border: 1px solid #bee5eb;
       display: block;
     }
-  </style>
-</head>
-<body>
-  <div id="status-bar"></div>
+</style>
 
-  <div class="row">
+<div id="status-bar"></div>
+
+<div class="row">
     <aside class="col-md-3 col-lg-2 stl-sidebar">
       <div class="px-3">
         <h6 class="mb-3">Views</h6>
@@ -993,6 +987,4 @@
       canvas.addEventListener('click', onCanvasClick);
     })();
   </script>
-</body>
-</html>
 {% endblock %}
