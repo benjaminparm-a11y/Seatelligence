@@ -756,6 +756,10 @@ def logout():
 def healthz():
     return {"status": "ok"}, 200
 
+@app.route("/theme-preview")
+def theme_preview():
+    return render_template("theme_preview.html")
+
 @app.route("/")
 def index():
     if "user" not in session:

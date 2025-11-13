@@ -1,0 +1,241 @@
+/* Seatelligence custom theme
+   Orca-inspired, matte, rounded, techy-but-soft
+*/
+
+:root {
+  /* Brand palette */
+  --stl-navy: #0b1f33;        /* main orca blue */
+  --stl-navy-soft: #132840;   /* slightly lighter for hovers */
+  --stl-cream: #f8f4ec;       /* background */
+  --stl-yellow: #facc15;      /* lightning yellow accent */
+  --stl-blue: #3b82f6;        /* lighter blue accent */
+  --stl-muted: #6b7280;       /* gray text */
+  --stl-border: #e5e7eb;      /* soft border */
+
+  /* Bootstrap overrides */
+  --bs-body-bg: var(--stl-cream);
+  --bs-body-color: #111827;
+  --bs-primary: var(--stl-navy);
+  --bs-secondary: var(--stl-blue);
+  --bs-warning: var(--stl-yellow);
+  --bs-info: var(--stl-blue);
+  --bs-border-radius: 0.75rem;
+  --bs-border-radius-sm: 0.5rem;
+  --bs-border-radius-lg: 1rem;
+}
+
+/* Global */
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--stl-cream);
+  color: var(--bs-body-color);
+}
+
+/* Navbar */
+
+.stl-navbar {
+  background: var(--stl-navy);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.stl-navbar .navbar-brand {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.stl-navbar .navbar-brand img {
+  height: 32px;
+}
+
+/* Sidebar */
+
+.stl-sidebar {
+  min-height: calc(100vh - 70px);
+  background: #f9fafb;
+  border-right: 1px solid var(--stl-border);
+  padding-top: 1rem;
+}
+
+.stl-sidebar h6 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--stl-muted);
+}
+
+.stl-sidebar .nav-link {
+  border-radius: 999px;
+  color: #4b5563;
+  font-size: 0.9rem;
+  padding: 0.45rem 0.9rem;
+  margin-bottom: 0.2rem;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.stl-sidebar .nav-link:hover {
+  background-color: #e5f0ff;
+  color: var(--stl-navy);
+  transform: translateX(1px);
+}
+
+.stl-sidebar .nav-link.active {
+  background: var(--stl-navy);
+  color: #f9fafb;
+}
+
+/* Cards */
+
+.card {
+  border-radius: 1rem;
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+/* Buttons */
+
+.btn {
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background: var(--stl-navy);
+  border-color: var(--stl-navy);
+}
+
+.btn-primary:hover {
+  background: var(--stl-navy-soft);
+  border-color: var(--stl-navy-soft);
+}
+
+.btn-outline-secondary {
+  border-color: var(--stl-border);
+  color: #374151;
+}
+
+.btn-outline-secondary:hover {
+  background: #e5f0ff;
+  color: var(--stl-navy);
+  border-color: #d1e3ff;
+}
+
+.btn-success {
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+/* Pills for filters / legend */
+
+.stl-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  border: 1px solid var(--stl-border);
+  background-color: #ffffff;
+  color: #374151;
+}
+
+/* Tables */
+
+.table {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.table thead {
+  background: #f3f4f6;
+}
+
+.table thead th {
+  border-bottom: 1px solid var(--stl-border);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--stl-muted);
+}
+
+.table tbody tr {
+  border-bottom: 1px solid rgba(229, 231, 235, 0.7);
+}
+
+.table-hover tbody tr:hover {
+  background-color: #eef2ff;
+}
+
+/* Page title */
+
+.stl-page-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--stl-navy);
+}
+
+/* Small status dot */
+
+.stl-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-right: 0.35rem;
+}
+
+.stl-status-available {
+  background-color: #22c55e;
+}
+
+.stl-status-booked {
+  background-color: #f97316;
+}
+
+/* Floorplan canvas container (soft edges) */
+
+.stl-floorplan-frame {
+  border-radius: 1.2rem;
+  background: #ffffff;
+  border: 1px solid var(--stl-border);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.04);
+  padding: 1rem;
+}
+
+/* Inputs */
+
+.form-control,
+.form-select {
+  border-radius: 999px;
+  border-color: var(--stl-border);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--stl-blue);
+  box-shadow: 0 0 0 0.16rem rgba(59, 130, 246, 0.25);
+}
+
+/* Alerts */
+
+.alert {
+  border-radius: 0.9rem;
+}
+
+/* Subtle scrollbars (desktop only) */
+
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(15, 23, 42, 0.15);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(15, 23, 42, 0.3);
+  }
+}

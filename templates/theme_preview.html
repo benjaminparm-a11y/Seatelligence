@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Seatelligence Theme Preview{% endblock %}
+
+{% block content %}
+<div class="row">
+  <aside class="col-md-3 col-lg-2 stl-sidebar">
+    <div class="px-3">
+      <h6 class="mb-3">Views</h6>
+      <nav class="nav flex-column mb-4">
+        <a class="nav-link active" href="#">Bookings list</a>
+        <a class="nav-link" href="#">Floorplan</a>
+        <a class="nav-link" href="#">Calendar</a>
+      </nav>
+
+      <h6 class="mb-3">Actions</h6>
+      <button class="btn btn-primary w-100 mb-2">New booking</button>
+      <button class="btn btn-outline-secondary w-100 mb-2">Optimize layout</button>
+    </div>
+  </aside>
+
+  <main class="col-md-9 col-lg-10">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <div class="stl-page-title">Bookings</div>
+        <div class="text-muted small">
+          <span class="stl-pill me-2"><span class="stl-status-dot stl-status-available"></span>Available</span>
+          <span class="stl-pill me-2"><span class="stl-status-dot stl-status-booked"></span>Booked</span>
+        </div>
+      </div>
+      <div class="text-end small text-muted">
+        Total bookings: 12 • Total seats: 46
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body p-0">
+        <table class="table table-hover table-sm mb-0 align-middle">
+          <thead>
+            <tr>
+              <th>Start</th>
+              <th>End</th>
+              <th>Party</th>
+              <th>Table</th>
+              <th>Guest</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>17:00</td>
+              <td>19:30</td>
+              <td>10</td>
+              <td>T5</td>
+              <td>Stine Hoel</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>17:30</td>
+              <td>20:00</td>
+              <td>4</td>
+              <td>T3</td>
+              <td>Katja Rugaas</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>17:30</td>
+              <td>20:00</td>
+              <td>2</td>
+              <td>T1</td>
+              <td>Irene Engelstad</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="stl-floorplan-frame mt-3">
+      <div class="text-muted small mb-2">Floorplan preview area</div>
+      <div style="height: 220px; background: repeating-linear-gradient(45deg, #f9fafb, #f9fafb 10px, #f3f4f6 10px, #f3f4f6 20px); border-radius: 0.9rem;"></div>
+    </div>
+  </main>
+</div>
+{% endblock %}

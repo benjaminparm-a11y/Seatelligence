@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -227,9 +229,30 @@
   </style>
 </head>
 <body>
-  <h1>Restaurant Booking</h1>
-  
   <div id="status-bar"></div>
+
+  <div class="row">
+    <aside class="col-md-3 col-lg-2 stl-sidebar">
+      <div class="px-3">
+        <h6 class="mb-3">Views</h6>
+        <nav class="nav flex-column mb-4">
+          <a class="nav-link active" href="#">Bookings list</a>
+          <a class="nav-link" href="#">Floorplan</a>
+          <a class="nav-link" href="#">Calendar</a>
+        </nav>
+
+        <h6 class="mb-3">Actions</h6>
+        <button class="btn btn-primary w-100 mb-2" onclick="document.getElementById('name').focus()">New booking</button>
+        <button class="btn btn-outline-secondary w-100 mb-2" onclick="optimizeLayout()">Optimize layout</button>
+      </div>
+    </aside>
+
+    <main class="col-md-9 col-lg-10">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <div class="stl-page-title">Bookings</div>
+        </div>
+      </div>
 
   <div class="container">
     <!-- Left Column: Controls & Bookings -->
@@ -321,6 +344,8 @@
         </div>
       </div>
     </div>
+  </div>
+    </main>
   </div>
   
   <!-- Popup for table info -->
@@ -970,3 +995,4 @@
   </script>
 </body>
 </html>
+{% endblock %}
