@@ -246,6 +246,9 @@
         <div>
           <div class="stl-page-title">Bookings</div>
         </div>
+        <div>
+          <button id="openCreateBookingModalHeader" class="btn btn-primary btn-sm">+ New booking</button>
+        </div>
       </div>
 
   <div class="container">
@@ -306,37 +309,22 @@
       <div id="tables"></div>
     </div>
 
-    <!-- Right Column: Canvas & Table Details -->
+    <!-- Right Column: Simplified Floorplan overview/link -->
     <div class="right-column">
-      <h2>Floorplan</h2>
-      <div style="margin: 6px 0 10px 0;">
-        <button onclick="refreshLayout()">🔄 Refresh Layout</button>
-        <button onclick="optimizeLayout()">🧠 Optimize layout</button>
-        <button onclick="reloadTables()">📥 Reload tables</button>
-      </div>
-      <div class="legend">
-        <strong>Legend:</strong>
-        <div class="legend-item">
-          <div class="legend-color available"></div>
-          <span>Available</span>
+      <section class="stl-card stl-card-large">
+        <div class="stl-card-header d-flex justify-content-between align-items-center">
+          <h2 class="stl-card-title mb-0">Floorplan</h2>
+          <span class="stl-card-meta">View and edit the full layout on the Floorplan page.</span>
         </div>
-        <div class="legend-item">
-          <div class="legend-color booked"></div>
-          <span>Booked</span>
+        <div class="p-3">
+          <p class="text-muted mb-3">
+            For full drag-and-drop editing, go to the dedicated Floorplan view.
+          </p>
+          <a href="{{ url_for('floorplan') }}" class="btn btn-outline-secondary btn-sm">
+            Open Floorplan
+          </a>
         </div>
-        <div class="legend-item">
-          <div class="legend-color neutral"></div>
-          <span>No date/time filter</span>
-        </div>
-      </div>
-      <div class="canvas-container">
-        <canvas id="floorplan" width="800" height="500" style="border:1px solid #ddd; display:block;">
-          Your browser does not support the HTML canvas tag.
-        </canvas>
-        <div id="table-details">
-          <div class="no-selection">Click on a table to view details</div>
-        </div>
-      </div>
+      </section>
     </div>
   </div>
     </main>

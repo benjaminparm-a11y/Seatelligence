@@ -239,3 +239,111 @@ body {
     background-color: rgba(15, 23, 42, 0.3);
   }
 }
+
+/* --- Calendar / Timeline styles --- */
+.stl-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.05);
+  margin-bottom: 1rem;
+}
+.stl-card-large { padding: 0.6rem; }
+.stl-card-header { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--stl-border); }
+.stl-card-title { font-size: 1.1rem; font-weight: 600; color: var(--stl-navy); }
+.stl-card-meta { font-size: 0.9rem; color: var(--stl-muted); }
+
+.stl-timeline {
+  position: relative;
+  margin: 12px 0;
+  padding-left: 140px; /* space for time column */
+}
+.stl-timeline:before {
+  content: "";
+  position: absolute;
+  left: 120px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--stl-border);
+}
+.stl-timeline-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin: 16px 0;
+}
+.stl-timeline-time {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 110px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #0d1b2a;
+}
+.stl-timeline-dot {
+  position: absolute;
+  left: 114px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  background: #0d6efd;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px #0d6efd44;
+  border-radius: 50%;
+}
+.stl-timeline-content {
+  margin-left: 24px;
+  background: #fff;
+  border: 1px solid var(--stl-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  flex: 1;
+}
+.stl-timeline-header { display: flex; justify-content: space-between; align-items: center; }
+.stl-timeline-title { font-weight: 600; }
+.stl-timeline-meta { color: var(--stl-muted); font-size: 0.9rem; }
+.stl-timeline-notes { margin-top: 6px; font-size: 0.95rem; }
+.stl-timeline-actions { margin-top: 8px; }
+
+/* Badges and links */
+.stl-badge { padding: 2px 8px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
+.stl-badge-pending { background: #fff3cd; color: #856404; }
+.stl-badge-confirmed { background: #d1e7dd; color: #0f5132; }
+.stl-badge-cancelled { background: #f8d7da; color: #842029; }
+.stl-link-sm { font-size: 0.9rem; color: #0d6efd; text-decoration: none; }
+.stl-link-sm:hover { text-decoration: underline; }
+.stl-link-danger { color: #dc3545; }
+
+/* Empty state */
+.stl-empty-state {
+  color: var(--stl-muted);
+}
+.stl-empty-state-padded {
+  padding: 1.25rem;
+  border: 1px dashed var(--stl-border);
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+/* --- Modal styles (Seatelligence) --- */
+.st-modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 2000; }
+.st-modal-open { display: flex; }
+.st-modal-hidden { display: none; }
+.st-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
+.st-modal-dialog { position: relative; background: #ffffff; border-radius: 1rem; padding: 1.25rem 1.5rem; max-width: 520px; width: 100%; box-shadow: 0 24px 60px rgba(0,0,0,0.25); border: 1px solid var(--stl-border); }
+.st-modal-header, .st-modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.st-modal-title { font-size: 1.25rem; font-weight: 600; color: var(--stl-navy); margin: 0; }
+.st-modal-body { margin-top: 0.75rem; margin-bottom: 1rem; position: relative; z-index: 1; }
+.st-modal-close { background: transparent; border: none; font-size: 1.25rem; cursor: pointer; color: #374151; }
+.st-form-vertical .st-form-row { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.75rem; }
+.st-input { border: 1px solid var(--stl-border); border-radius: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.95rem; }
+.st-input:focus { outline: none; border-color: var(--stl-blue); box-shadow: 0 0 0 0.16rem rgba(59, 130, 246, 0.25); }
+.st-button { border-radius: 999px; border: 1px solid transparent; padding: 0.45rem 0.9rem; font-weight: 600; cursor: pointer; }
+.st-button-primary { background: var(--stl-navy); color: #fff; border-color: var(--stl-navy); }
+.st-button-primary:hover { background: var(--stl-navy-soft); border-color: var(--stl-navy-soft); }
+.st-button-ghost { background: transparent; border-color: var(--stl-border); color: #374151; }
+.st-button-ghost:hover { background: #eef2ff; color: var(--stl-navy); border-color: #d1e3ff; }
+.st-sidebar-button { width: 100%; border-radius: 999px; padding: 0.5rem 0.9rem; border: 1px solid var(--stl-border); background: #fff; color: var(--stl-navy); font-weight: 600; }
+.st-sidebar-button:hover { background: #e5f0ff; }

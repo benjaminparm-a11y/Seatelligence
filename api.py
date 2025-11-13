@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 import json
 import os
-from datetime import datetime
+from datetime import date, datetime, timedelta
 import math
 import copy
 from pathlib import Path
@@ -52,6 +52,72 @@ def save_bookings_for_date(date_str, bookings):
     filename = bookings_file_for_date(date_str)
     with open(filename, "w") as f:
         json.dump(bookings, f, indent=4)
+
+
+@app.route("/calendar")
+def calendar():
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    # Parse ?date=YYYY-MM-DD or default to today
+    date_str = request.args.get("date")
+    if date_str:
+        try:
+            selected_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = date.today()
+    else:
+        selected_date = date.today()
+
+    sel_iso = selected_date.isoformat()
+
+    # Load bookings for the selected date using local store; fall back if needed
+    try:
+        bookings = load_bookings_for_date(sel_iso)
+    except Exception:
+        # Fallback: attempt through booking_app if available
+        try:
+            bookings = booking_app.load_bookings(sel_iso) or []
+        except Exception:
+            bookings = []
+
+    # If bookings contain date fields from a larger set, filter just in case
+    def b_date(b):
+        d = b.get("date")
+        if isinstance(d, str):
+            return d
+        return str(d) if d is not None else sel_iso
+
+    bookings_for_date = [b for b in bookings if b_date(b) == sel_iso]
+
+    # Sort by a best-effort time key: prefer 'time', then 'start_time', then 'datetime'
+    def time_key(b):
+        t = b.get("time") or b.get("start_time") or b.get("datetime") or ""
+        # Extract HH:MM if embedded in a datetime string
+        if isinstance(t, str):
+            # Normalize common forms: 'HH:MM', 'YYYY-MM-DDTHH:MM', etc.
+            try:
+                if len(t) == 5 and t[2] == ":":
+                    hh, mm = int(t[:2]), int(t[3:5])
+                    return (hh, mm)
+                # Try parse ISO datetime
+                dt = datetime.fromisoformat(t.replace("Z", "+00:00"))
+                return (dt.hour, dt.minute)
+            except Exception:
+                pass
+        return (99, 99)
+
+    bookings_for_date.sort(key=time_key)
+
+    return render_template(
+        "calendar.html",
+        bookings=bookings_for_date,
+        selected_date=selected_date,
+        prev_date=selected_date - timedelta(days=1),
+        next_date=selected_date + timedelta(days=1),
+        today=date.today(),
+        active_page="calendar",
+    )
 
 
 # -------------------------
@@ -429,31 +495,56 @@ def create_booking():
     
     Finds an available table automatically. Returns 400 if no table available.
     """
-    data = request.get_json()
-    
-    # Validate required fields
-    required = ["date", "name", "party_size", "start_time"]
-    missing = [r for r in required if r not in data]
-    if missing:
-        return jsonify({"error": f"Missing fields: {', '.join(missing)}"}), 400
-    
-    date_str = data["date"]
-    name = data["name"]
-    party_size = data["party_size"]
-    start_time = data["start_time"]
+    # Accept both JSON API and HTML form submissions
+    data = request.get_json(silent=True) or {}
+    is_form = not data and request.form
+
+    if is_form:
+        # Form fields from modal
+        date_str = request.form.get("date")
+        name = request.form.get("name")
+        party_size = request.form.get("people")
+        start_time = request.form.get("time")
+        table_number = request.form.get("table_number")  # optional (currently unused)
+        notes = request.form.get("notes")  # optional (currently unused)
+
+        # Basic validation
+        if not (date_str and name and party_size and start_time):
+            # For form posts, redirect back to index with minimal friction
+            return redirect(url_for("index"))
+        try:
+            party_size = int(party_size)
+        except (TypeError, ValueError):
+            party_size = 0
+        if party_size <= 0:
+            return redirect(url_for("index"))
+        duration_minutes = 120  # default duration for modal-based create
+    else:
+        # JSON API
+        # Validate required fields
+        required = ["date", "name", "party_size", "start_time"]
+        missing = [r for r in required if r not in data]
+        if missing:
+            return jsonify({"error": f"Missing fields: {', '.join(missing)}"}), 400
+
+        date_str = data["date"]
+        name = data["name"]
+        party_size = data["party_size"]
+        start_time = data["start_time"]
     
     # Calculate duration
-    if "duration_minutes" in data:
-        duration_minutes = data["duration_minutes"]
-    elif "end_time" in data:
-        # Calculate duration from start_time and end_time
-        start_mins = booking_app.time_to_minutes(start_time)
-        end_mins = booking_app.time_to_minutes(data["end_time"])
-        duration_minutes = end_mins - start_mins
-        if duration_minutes <= 0:
-            return jsonify({"error": "end_time must be after start_time"}), 400
-    else:
-        return jsonify({"error": "Must provide either 'end_time' or 'duration_minutes'"}), 400
+    if not is_form:
+        if "duration_minutes" in data:
+            duration_minutes = data["duration_minutes"]
+        elif "end_time" in data:
+            # Calculate duration from start_time and end_time
+            start_mins = booking_app.time_to_minutes(start_time)
+            end_mins = booking_app.time_to_minutes(data["end_time"])
+            duration_minutes = end_mins - start_mins
+            if duration_minutes <= 0:
+                return jsonify({"error": "end_time must be after start_time"}), 400
+        else:
+            return jsonify({"error": "Must provide either 'end_time' or 'duration_minutes'"}), 400
     
     # Load tables and bookings for the specified date
     booking_app.load_tables()
@@ -488,15 +579,19 @@ def create_booking():
     bookings.append(new_booking)
     save_bookings_for_date(date_str, bookings)
     
-    return jsonify({
-        "status": "ok",
-        "message": f"Booking created for {name}, party of {party_size}",
-        "booking": new_booking,
-        "table": {
-            "id": table["id"],
-            "seats": table["seats"]
-        }
-    }), 201
+    if is_form:
+        # On form submission, redirect back to the Bookings page
+        return redirect(url_for("index"))
+    else:
+        return jsonify({
+            "status": "ok",
+            "message": f"Booking created for {name}, party of {party_size}",
+            "booking": new_booking,
+            "table": {
+                "id": table["id"],
+                "seats": table["seats"]
+            }
+        }), 201
 
 @app.route("/bookings", methods=["DELETE"])
 def delete_booking():
@@ -764,7 +859,25 @@ def theme_preview():
 def index():
     if "user" not in session:
         return redirect(url_for("login"))
-    return render_template("index.html", user=session["user"])
+    return render_template("index.html", user=session["user"], active_page="bookings")
+
+@app.route("/floorplan")
+def floorplan():
+    if "user" not in session:
+        return redirect(url_for("login"))
+    # Reuse existing table loader if available
+    try:
+        tables = load_tables()
+    except Exception:
+        tables = []
+    return render_template("floorplan.html", user=session["user"], tables=tables, active_page="floorplan")
+
+@app.route("/calendar")
+def calendar():
+    if "user" not in session:
+        return redirect(url_for("login"))
+    # Placeholder view until a dedicated calendar page is added
+    return render_template("index.html", user=session["user"], active_page="calendar")
 
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=5001, use_reloader=False)

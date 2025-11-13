@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Seatelligence — Floorplan{% endblock %}
+
+{% block page_header %}
+<div class="d-flex align-items-center justify-content-between">
+  <div>
+    <h1 class="stl-page-title mb-0">Floorplan</h1>
+    <div class="text-muted small">Arrange tables and visualize occupancy</div>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-outline-secondary" id="resetLayoutBtn">Reset layout</button>
+    <button class="btn btn-primary" id="saveLayoutBtn">Save layout</button>
+    <button class="btn btn-outline-secondary" id="autoAssignBtn">Auto-assign</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block page_content %}
+<div class="card stl-card">
+  <div class="card-body">
+    <div class="stl-floorplan-frame">
+      <canvas id="floorplanCanvas" class="w-100" height="600"></canvas>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script id="tables-data" type="application/json">{{ tables | tojson | safe }}</script>
+  <script src="{{ url_for('static', filename='js/floorplan.js') }}"></script>
+  <script>
+    // Boot the floorplan view if a global initializer exists
+    window.addEventListener('DOMContentLoaded', function () {
+      const dataEl = document.getElementById('tables-data');
+      let tables = [];
+      try {
+        tables = JSON.parse((dataEl && dataEl.textContent) || '[]');
+      } catch (e) {
+        tables = [];
+      }
+      if (window.Seatelligence && typeof window.Seatelligence.initFloorplan === 'function') {
+        const canvas = document.getElementById('floorplanCanvas');
+        window.Seatelligence.initFloorplan(canvas, { tables });
+      }
+    });
+  </script>
+{% endblock %}
