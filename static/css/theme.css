@@ -148,6 +148,10 @@ html[data-theme="dark"] .calendar-time-col {
    GLOBAL STYLES
    ============================================================ */
 
+html {
+  overflow-y: scroll;   /* always reserve scrollbar space to prevent layout shift */
+}
+
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background-color: var(--st-surface-soft);
@@ -413,6 +417,7 @@ body {
 
 .form-control,
 .st-input,
+.st-textarea,
 .form-select {
   background-color: var(--st-surface);
   border: 1px solid var(--st-border);
@@ -421,8 +426,14 @@ body {
   padding: 0.6rem 1rem;
 }
 
+.st-textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
 .form-control:focus,
 .st-input:focus,
+.st-textarea:focus,
 .form-select:focus {
   border-color: var(--stl-blue);
   box-shadow: 0 0 0 3px var(--stl-yellow-glow);
@@ -498,6 +509,56 @@ body {
    MODALS
    ============================================================ */
 
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-overlay.is-visible {
+  display: flex;
+}
+
+.modal-card {
+  background: var(--st-surface);
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+  padding: 24px 28px;
+  max-width: 540px;
+  width: 90%;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--stl-navy);
+}
+
+.modal-close-btn {
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--stl-gray-dark);
+}
+
+.modal-close-btn:hover {
+  color: var(--stl-navy);
+}
+
 .st-modal {
   position: fixed;
   inset: 0;
@@ -568,9 +629,7 @@ body {
   color: var(--stl-navy);
 }
 
-body.st-modal-open {
-  overflow: hidden;
-}
+/* Removed body.st-modal-open { overflow: hidden; } to prevent layout shift */
 
 /* ============================================================
    FORMS
@@ -651,6 +710,56 @@ body.st-modal-open {
   background: var(--stl-blue-soft);
   border-color: var(--stl-blue);
   box-shadow: 0 0 4px var(--stl-yellow-glow);
+}
+
+/* ============================================================
+   TABLE PILL SELECTOR (Multi-table Checkbox Group)
+   ============================================================ */
+
+.table-pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.table-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--stl-gray-lighter);
+  background: var(--st-surface);
+  font-size: 0.9rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease,
+              box-shadow 0.15s ease, transform 0.05s ease;
+  color: var(--stl-navy);
+}
+
+.table-pill:hover {
+  border-color: var(--stl-navy);
+  box-shadow: 0 0 8px var(--stl-yellow-glow);
+  transform: translateY(-1px);
+}
+
+.table-pill input.table-checkbox {
+  display: none;
+}
+
+.table-pill:has(input.table-checkbox:checked) {
+  background: var(--stl-navy);
+  color: var(--stl-blue);
+  border-color: var(--stl-navy);
+  box-shadow: 0 0 12px var(--stl-yellow-glow);
+}
+
+.table-pill input.table-checkbox:checked + span::before {
+  content: "✓ ";
+  font-size: 0.85rem;
+  margin-right: 0.2rem;
 }
 
 /* ============================================================

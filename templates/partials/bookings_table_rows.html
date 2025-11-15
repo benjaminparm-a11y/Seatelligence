@@ -25,6 +25,7 @@
           data-start-time="{{ booking.start_time }}"
           data-end-time="{{ booking.end_time }}"
           data-table-id="{{ booking.table_id }}"
+          data-tables='{{ booking.tables | tojson | e }}'
           data-notes="{{ booking.notes | default('') | e }}">
           Edit
         </button>

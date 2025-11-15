@@ -93,6 +93,7 @@
                             data-start-time="{{ cell.start_time }}"
                             data-end-time="{{ cell.end_time }}"
                             data-table-id="{{ row.table.id }}"
+                            data-tables='{{ cell.booking.tables | tojson | e }}'
                             data-notes='{{ (cell.notes or "") | e }}'>
                             ✎
                           </button>
@@ -121,8 +122,64 @@
 {% block scripts %}
   <script src="{{ url_for('static', filename='js/calendar_drag_drop.js') }}"></script>
   
-  <!-- Include edit booking modal -->
-  {% include "partials/booking_edit_modal.html" %}
+  <!-- Edit booking modal overlay (global, outside layout) -->
+  <div id="editBookingOverlay" class="modal-overlay">
+    <div id="editBookingModal" class="modal-card">
+      <div class="modal-header">
+        <h2>Edit booking</h2>
+        <button type="button" class="modal-close-btn" id="closeEditBookingModal">&times;</button>
+      </div>
+      <form id="editBookingForm" method="POST" action="">
+        <!-- Existing form fields: guest name, party size, table, date, time, notes -->
+        <input type="hidden" name="booking_id" id="edit-booking-id">
+        <div class="st-form-row">
+          <label for="edit-name">Guest name
+            <input type="text" name="name" id="edit-name" class="st-input" required>
+          </label>
+        </div>
+        <div class="st-form-row">
+          <label for="edit-party-size">Party size</label>
+          <input type="number" name="party_size" id="edit-party-size" class="st-input" min="1" required>
+        </div>
+        <div class="st-form-row">
+          <label>Tables</label>
+          <div class="table-pill-group">
+            {% for table in tables %}
+            <label class="table-pill">
+              <input type="checkbox" class="table-checkbox" name="table_ids" value="{{ table.id }}">
+              <span>{{ table.name or ("Table " ~ table.id) }}</span>
+            </label>
+            {% endfor %}
+          </div>
+          <small class="form-text text-muted" style="font-size: 0.75rem; color: var(--stl-gray); margin-top: 0.25rem; display: block;">
+            Select one or more tables.
+          </small>
+        </div>
+        <div class="st-form-row">
+          <label for="edit-date">Date
+            <input type="date" name="date" id="edit-date" class="st-input" required min="{{ today.isoformat() }}" max="{{ max_booking_date.isoformat() }}">
+          </label>
+        </div>
+        <div class="st-form-row st-form-row-2">
+          <label for="edit-start-time">Start time
+            <input type="time" name="start_time" id="edit-start-time" class="st-input" required>
+          </label>
+          <label for="edit-end-time">End time
+            <input type="time" name="end_time" id="edit-end-time" class="st-input" required>
+          </label>
+        </div>
+        <div class="st-form-row">
+          <label for="edit-notes">Notes
+            <textarea name="notes" id="edit-notes" class="st-textarea" rows="3"></textarea>
+          </label>
+        </div>
+        <div class="st-modal-footer">
+          <button type="button" class="st-button st-button-ghost" id="cancelEditBooking">Cancel</button>
+          <button type="submit" class="st-button st-button-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
   
   <!-- Include edit booking JS -->
   <script src="{{ url_for('static', filename='js/booking_edit.js') }}"></script>

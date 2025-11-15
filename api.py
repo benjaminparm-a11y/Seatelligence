@@ -39,7 +39,7 @@ TABLE_COMBINATIONS = [
 USERS = {
     "admin": "password123",
     "host": "host123",
-    "LarsB": "larspistasj69"
+    "lars": "larspistasj69"
 }
 
 app = Flask(__name__)
@@ -300,11 +300,52 @@ def load_constraints():
 def bookings_file_for_date(date_str):
     return DATA_DIR / f"bookings_{date_str}.json"
 
+def normalize_booking_tables(booking):
+    """Normalize booking data to ensure tables is always a list.
+    
+    - If 'tables' exists as a list, use it.
+    - If 'tables' exists as a string, parse it as comma-separated ints.
+    - Otherwise, migrate from 'table_id' to 'tables' list.
+    - Maintains backward compatibility by keeping table_id as first table.
+    
+    Args:
+        booking: Dictionary containing booking data
+        
+    Returns:
+        The same booking dict with normalized 'tables' list
+    """
+    if "tables" in booking:
+        # Already has tables field
+        if isinstance(booking["tables"], str):
+            # Parse comma-separated string
+            booking["tables"] = [int(x.strip()) for x in booking["tables"].split(",") if x.strip()]
+        elif not isinstance(booking["tables"], list):
+            # Convert single value to list
+            booking["tables"] = [int(booking["tables"])]
+    else:
+        # Migrate from table_id
+        table_id = booking.get("table_id")
+        if table_id is not None:
+            booking["tables"] = [int(table_id)]
+        else:
+            booking["tables"] = []
+    
+    # Ensure all table IDs are integers
+    booking["tables"] = [int(t) for t in booking["tables"]]
+    
+    # Maintain backward compatibility: set table_id to first table
+    if booking["tables"]:
+        booking["table_id"] = booking["tables"][0]
+    
+    return booking
+
 def load_bookings_for_date(date_str):
     filename = bookings_file_for_date(date_str)
     if filename.exists():
         with open(filename, "r") as f:
-            return json.load(f)
+            bookings = json.load(f)
+            # Normalize all bookings to support multiple tables
+            return [normalize_booking_tables(b) for b in bookings]
     return []
 
 def save_bookings_for_date(date_str, bookings):
@@ -1381,7 +1422,7 @@ def move_booking_to_table():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/bookings/<int:date_str>/<int:booking_index>/edit", methods=["POST"])
+@app.route("/bookings/<int:date_str>/<int:booking_index>/edit", methods=["GET", "POST"])
 def edit_booking(date_str, booking_index):
     """Edit an existing booking identified by date and index position.
     
@@ -1410,10 +1451,23 @@ def edit_booking(date_str, booking_index):
     
     booking = bookings[booking_index]
     
+    if request.method == "GET":
+        # Return booking data as JSON for modal prefill
+        return jsonify({
+            "name": booking.get("name", ""),
+            "party_size": booking.get("party_size", 1),
+            "tables": booking.get("tables", []),
+            "table_id": booking.get("table_id", ""),  # For backward compatibility
+            "date": booking.get("date", original_date),
+            "start_time": booking.get("start_time", ""),
+            "end_time": booking.get("end_time", ""),
+            "notes": booking.get("notes", "")
+        })
+
     # Read form fields
     name = request.form.get("name", "").strip()
     party_size_str = request.form.get("party_size", "0").strip()
-    table_id_str = request.form.get("table_id", "").strip()
+    table_ids_list = request.form.getlist("table_ids")  # Get multiple table selections
     new_date_str = request.form.get("date", "").strip()
     start_time_str = request.form.get("start_time", "").strip()
     end_time_str = request.form.get("end_time", "").strip()
@@ -1428,10 +1482,17 @@ def edit_booking(date_str, booking_index):
     except ValueError:
         party_size = booking.get("party_size", 2)
     
-    try:
-        table_id = int(table_id_str)
-    except ValueError:
-        table_id = booking.get("table_id")
+    # Parse multiple table IDs
+    tables = []
+    for tid in table_ids_list:
+        try:
+            tables.append(int(tid))
+        except ValueError:
+            continue
+    
+    # Fall back to existing tables if none selected
+    if not tables:
+        tables = booking.get("tables", [])
     
     # Title case the name
     name = name.title()
@@ -1453,7 +1514,10 @@ def edit_booking(date_str, booking_index):
     # Update booking fields
     booking["name"] = name
     booking["party_size"] = party_size
-    booking["table_id"] = table_id
+    booking["tables"] = tables
+    # Maintain backward compatibility: set table_id to first table
+    if tables:
+        booking["table_id"] = tables[0]
     booking["date"] = new_date_str
     booking["start_time"] = start_time_str
     booking["end_time"] = end_time_str

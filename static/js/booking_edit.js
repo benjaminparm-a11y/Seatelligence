@@ -4,24 +4,23 @@
  */
 
 document.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("editBookingOverlay");
   const modal = document.getElementById("editBookingModal");
-  const backdrop = document.getElementById("editBookingModalBackdrop");
   const form = document.getElementById("editBookingForm");
 
-  if (!modal || !backdrop || !form) {
+  if (!overlay || !modal || !form) {
     console.warn("Edit booking modal elements not found");
     return;
   }
 
   // Form field references
-  const bookingIndexInput = document.getElementById("edit-booking-index");
-  const originalDateInput = document.getElementById("edit-original-date");
+  const bookingIdInput = document.getElementById("edit-booking-id");
   const nameInput = document.getElementById("edit-name");
   const partySizeInput = document.getElementById("edit-party-size");
   const dateInput = document.getElementById("edit-date");
   const startTimeInput = document.getElementById("edit-start-time");
   const endTimeInput = document.getElementById("edit-end-time");
-  const tableSelect = document.getElementById("edit-table-id");
+  const tableCheckboxes = document.querySelectorAll('.table-checkbox');  // Changed to checkboxes
   const notesInput = document.getElementById("edit-notes");
 
   // Button references
@@ -30,12 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /**
    * Open the modal and populate with booking data
-   * @param {Object} data - Booking data with keys: bookingIndex, name, partySize, date, startTime, endTime, tableId, notes
+   * @param {Object} data - Booking data with keys: bookingIndex, name, partySize, date, startTime, endTime, tables, notes
    */
   function openModalWithData(data) {
     // Populate hidden fields
-    bookingIndexInput.value = data.bookingIndex || "";
-    originalDateInput.value = data.date || "";
+    bookingIdInput.value = data.bookingIndex || "";
 
     // Populate form fields
     nameInput.value = data.name || "";
@@ -45,56 +43,68 @@ document.addEventListener("DOMContentLoaded", () => {
     endTimeInput.value = data.endTime || "";
     notesInput.value = data.notes || "";
 
-    // Set table selection
-    if (data.tableId && tableSelect) {
-      tableSelect.value = data.tableId;
-    }
+    // Set table selections (checkboxes)
+    const tablesToSelect = data.tables || (data.tableId ? [data.tableId] : []);
+    tableCheckboxes.forEach(cb => {
+      const value = parseInt(cb.value, 10);
+      cb.checked = Array.isArray(tablesToSelect) && tablesToSelect.includes(value);
+    });
 
     // Build form action URL: /bookings/{date_as_number}/{index}/edit
     // Convert date "2025-11-13" to "20251113"
     const dateNumber = (data.date || "").replace(/-/g, "");
     form.action = `/bookings/${dateNumber}/${data.bookingIndex}/edit`;
 
-    // Show modal
-    modal.classList.remove("st-modal-hidden");
-    modal.style.display = "flex";
-    modal.setAttribute("aria-hidden", "false");
-    backdrop.style.display = "block";
-    document.body.classList.add("st-modal-open");
+    // Show overlay/modal
+    overlay.classList.add("is-visible");
+    overlay.style.display = "flex";
+    overlay.setAttribute("aria-hidden", "false");
 
     // Focus on name field
-    nameInput.focus();
+    setTimeout(() => nameInput.focus(), 100);
   }
 
   /**
    * Close the modal
    */
   function closeModal() {
-    modal.classList.add("st-modal-hidden");
-    modal.style.display = "none";
-    modal.setAttribute("aria-hidden", "true");
-    backdrop.style.display = "none";
-    document.body.classList.remove("st-modal-open");
+    overlay.classList.remove("is-visible");
+    overlay.style.display = "none";
+    overlay.setAttribute("aria-hidden", "true");
+  }
+
+  function openEditModal() {
+    overlay.classList.add("is-visible");
+    setTimeout(() => {
+      const nameInput = document.getElementById("edit-name");
+      if (nameInput) nameInput.focus();
+    }, 100);
+  }
+
+  function closeEditModal() {
+    overlay.classList.remove("is-visible");
   }
 
   // Event listeners for close buttons
   if (closeBtn) {
-    closeBtn.addEventListener("click", closeModal);
+    closeBtn.addEventListener("click", closeEditModal);
   }
 
   if (cancelBtn) {
-    cancelBtn.addEventListener("click", closeModal);
+    cancelBtn.addEventListener("click", closeEditModal);
   }
 
-  // Close on backdrop click
-  if (backdrop) {
-    backdrop.addEventListener("click", closeModal);
-  }
+  // Close when clicking the overlay itself (not inside modal)
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) {
+      closeEditModal();
+    }
+  });
 
   // Close on Escape key
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !modal.classList.contains("st-modal-hidden")) {
-      closeModal();
+    if (e.key === "Escape" && overlay.classList.contains("is-visible")) {
+      closeEditModal();
     }
   });
 
@@ -110,6 +120,23 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Edit button clicked!");
         e.stopPropagation(); // Prevent any parent handlers
 
+        // Get table data - support both single table_id and multiple tables
+        const tableIdAttr = btn.getAttribute("data-table-id");
+        const tablesAttr = btn.getAttribute("data-tables");
+        
+        let tables = [];
+        if (tablesAttr) {
+          // Parse tables array (could be JSON or comma-separated)
+          try {
+            tables = JSON.parse(tablesAttr);
+          } catch (e) {
+            tables = tablesAttr.split(",").map(t => parseInt(t.trim(), 10)).filter(t => !isNaN(t));
+          }
+        } else if (tableIdAttr) {
+          // Fall back to single table_id
+          tables = [parseInt(tableIdAttr, 10)];
+        }
+
         openModalWithData({
           bookingIndex: btn.getAttribute("data-booking-index"),
           name: btn.getAttribute("data-name"),
@@ -117,7 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
           date: btn.getAttribute("data-date"),
           startTime: btn.getAttribute("data-start-time"),
           endTime: btn.getAttribute("data-end-time"),
-          tableId: btn.getAttribute("data-table-id"),
+          tables: tables,
+          tableId: tableIdAttr ? parseInt(tableIdAttr, 10) : null,  // For backward compatibility
           notes: btn.getAttribute("data-notes") || "",
         });
       });
@@ -205,4 +233,27 @@ document.addEventListener("DOMContentLoaded", () => {
   if (bookingsBody) {
     observer.observe(bookingsBody, { childList: true, subtree: true });
   }
+
+  // Handle form submit via fetch to ensure POST and handle redirect/reload
+  form.addEventListener("submit", function(event) {
+    event.preventDefault();
+    const formData = new FormData(form);
+    const actionUrl = form.action;
+    fetch(actionUrl, {
+      method: "POST",
+      body: formData,
+    }).then(response => {
+      if (response.redirected) {
+        window.location.href = response.url;
+      } else {
+        closeEditModal();
+        window.location.reload();
+      }
+    }).catch(() => {
+      alert("Failed to update booking");
+    });
+  });
+
+  // Expose openEditModal for use by edit buttons
+  window.openEditModal = openEditModal;
 });

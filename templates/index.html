@@ -504,6 +504,7 @@
           // Add Edit button
           const escapedName = (b.name || '').replace(/"/g, '&quot;');
           const escapedNotesForEdit = (b.notes || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+          const tablesJSON = JSON.stringify(b.tables || (b.table_id ? [b.table_id] : []));
           actionsHTML += `
             <button
               type="button"
@@ -515,6 +516,7 @@
               data-start-time="${b.start_time || ''}"
               data-end-time="${b.end_time || ''}"
               data-table-id="${b.table_id || ''}"
+              data-tables='${tablesJSON.replace(/'/g, '&#39;')}'
               data-notes="${escapedNotesForEdit}">
               Edit
             </button>
