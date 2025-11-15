@@ -1,22 +1,45 @@
-/* Seatelligence custom theme
-   Orca-inspired, matte, rounded, techy-but-soft
-*/
+/* ============================================================
+   SEATELLIGENCE CUSTOM THEME
+   New Brand Palette - 2025
+   ============================================================ */
 
 :root {
-  /* Brand palette */
-  --stl-navy: #0b1f33;        /* main orca blue */
-  --stl-navy-soft: #132840;   /* slightly lighter for hovers */
-  --stl-cream: #f8f4ec;       /* background */
-  --stl-yellow: #facc15;      /* lightning yellow accent */
-  --stl-blue: #3b82f6;        /* lighter blue accent */
-  --stl-muted: #6b7280;       /* gray text */
-  --stl-border: #e5e7eb;      /* soft border */
-
+  /* ===== NEW SEATELLIGENCE BRAND PALETTE ===== */
+  --stl-navy: #0C1C2C;          /* Primary dark navy */
+  --stl-navy-soft: #1a2d3f;     /* Slightly lighter navy for hovers */
+  --stl-navy-lighter: #2a3d4f;  /* Even lighter for borders/accents */
+  --stl-blue: #B9DFF5;          /* Primary light blue */
+  --stl-blue-soft: #d4ebf9;     /* Softer light blue for backgrounds */
+  --stl-cream: #F7F4EE;         /* Secondary neutral background */
+  --stl-yellow: #F5C400;        /* Accent lightning yellow (use sparingly!) */
+  --stl-yellow-glow: rgba(245, 196, 0, 0.25); /* Yellow glow effect */
+  
+  /* Neutral grays for text/borders */
+  --stl-gray-dark: #374151;
+  --stl-gray: #6b7280;
+  --stl-gray-light: #9ca3af;
+  --stl-gray-lighter: #d1d5db;
+  --stl-gray-lightest: #e5e7eb;
+  
+  /* Semantic mappings */
+  --st-bg: var(--stl-cream);
+  --st-surface: #ffffff;
+  --st-surface-soft: var(--stl-cream);
+  --st-primary: var(--stl-navy);
+  --st-primary-soft: var(--stl-blue-soft);
+  --st-accent: var(--stl-blue);
+  --st-highlight: var(--stl-yellow);
+  --st-text: var(--stl-navy);
+  --st-text-muted: var(--stl-gray);
+  --st-border: var(--stl-gray-lightest);
+  
   /* Bootstrap overrides */
-  --bs-body-bg: var(--stl-cream);
-  --bs-body-color: #111827;
-  --bs-primary: var(--stl-navy);
+  --bs-body-bg: var(--st-surface-soft);
+  --bs-body-color: var(--st-text);
+  --bs-primary: var(--st-primary);
+  --bs-primary-rgb: 12, 28, 44;
   --bs-secondary: var(--stl-blue);
+  --bs-success: #10b981;
   --bs-warning: var(--stl-yellow);
   --bs-info: var(--stl-blue);
   --bs-border-radius: 0.75rem;
@@ -24,19 +47,120 @@
   --bs-border-radius-lg: 1rem;
 }
 
-/* Global */
+/* ============================================================
+   DARK THEME
+   Toggle via: document.documentElement.dataset.theme = 'dark'
+   ============================================================ */
+html[data-theme="dark"],
+:root[data-theme="dark"] {
+  /* Prefer dark color-scheme for native form controls, scrollbars, etc. */
+  color-scheme: dark;
+
+  /* Core surfaces and text */
+  --st-surface-soft: #0b1422;   /* Page background */
+  --st-surface: #0f1a2a;        /* Cards/panels */
+  --st-text: #e6edf3;           /* Primary text */
+  --st-text-muted: #9aa4b2;     /* Muted text */
+  --st-border: #253247;         /* Borders/dividers */
+
+  /* Brand accents tuned for dark */
+  --stl-blue-soft: #1a3142;     /* Subtle blue background */
+  --stl-blue: #8fd2f3;          /* Accent blue text/borders */
+  --stl-navy: #0c1c2c;          /* Keep core brand navy */
+  --stl-navy-soft: #132438;     /* Darker hover navy */
+  --stl-navy-lighter: #1e2e42;  /* Border navy */
+
+  /* Bootstrap overrides in dark */
+  --bs-body-bg: var(--st-surface-soft);
+  --bs-body-color: var(--st-text);
+  --bs-primary: var(--stl-navy);
+  --bs-primary-rgb: 12, 28, 44;
+  --bs-secondary: var(--stl-blue);
+  --bs-info: var(--stl-blue);
+}
+
+/* Optional: fine-tune some components in dark without changing markup */
+.stl-navbar {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.table thead {
+  background: #111b2b;
+}
+
+/* ============================================================
+   Floating theme toggle
+   ============================================================ */
+.theme-toggle-fab {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 2050;
+  background: var(--st-surface);
+  border: 1px solid var(--st-border);
+  color: var(--st-text);
+  padding: 8px 12px;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Make form-switch contrast better on dark */
+html[data-theme="dark"] .theme-toggle-fab {
+  box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+}
+
+/* ============================================================
+   Navy-to-white text overrides in dark mode
+   Target common elements that use var(--stl-navy) for text
+   ============================================================ */
+html[data-theme="dark"] .stl-page-title,
+html[data-theme="dark"] .stl-card-title,
+html[data-theme="dark"] .stl-link-sm,
+html[data-theme="dark"] .booking-date-label,
+html[data-theme="dark"] .calendar-table-col,
+html[data-theme="dark"] .calendar-table-cell,
+html[data-theme="dark"] .calendar-time-col,
+html[data-theme="dark"] .calendar-edit-btn,
+html[data-theme="dark"] .booking-notes-btn,
+html[data-theme="dark"] .stl-navbar .navbar-text,
+html[data-theme="dark"] .st-toggle-btn,
+html[data-theme="dark"] .stl-timeline-time,
+html[data-theme="dark"] .stl-timeline-title,
+html[data-theme="dark"] .booking-date-nav-btn {
+  color: #ffffff !important;
+}
+
+/* Keep hover/active states readable in dark */
+html[data-theme="dark"] .stl-link-sm:hover {
+  color: #ffffff !important;
+}
+
+/* Calendar header backgrounds in dark mode */
+html[data-theme="dark"] .calendar-table-col,
+html[data-theme="dark"] .calendar-table-cell,
+html[data-theme="dark"] .calendar-time-col {
+  background: #111b2b !important;
+}
+
+/* ============================================================
+   GLOBAL STYLES
+   ============================================================ */
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background-color: var(--stl-cream);
-  color: var(--bs-body-color);
+  background-color: var(--st-surface-soft);
+  color: var(--st-text);
 }
 
-/* Navbar */
+/* ============================================================
+   NAVBAR
+   ============================================================ */
 
 .stl-navbar {
   background: var(--stl-navy);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 12px 30px rgba(12, 28, 44, 0.18);
 }
 
 .stl-navbar .navbar-brand {
@@ -44,16 +168,43 @@ body {
   letter-spacing: 0.04em;
 }
 
+.stl-navbar .navbar-brand .brand-text {
+  font-family: 'Courier New', 'Courier', monospace;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-style: normal;
+}
+
 .stl-navbar .navbar-brand img {
   height: 32px;
 }
 
-/* Sidebar */
+.stl-navbar .navbar-text {
+  color: var(--stl-blue);
+}
+
+.stl-navbar .btn-outline-light {
+  border-color: var(--stl-blue);
+  color: var(--stl-blue);
+}
+
+.stl-navbar .btn-outline-light:hover {
+  background: var(--stl-blue);
+  border-color: var(--stl-blue);
+  color: var(--stl-navy);
+  box-shadow: 0 0 12px var(--stl-yellow-glow);
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
 
 .stl-sidebar {
   min-height: calc(100vh - 70px);
-  background: #f9fafb;
-  border-right: 1px solid var(--stl-border);
+  background: var(--st-surface);
+  border-right: 1px solid var(--st-border);
   padding-top: 1rem;
 }
 
@@ -61,84 +212,175 @@ body {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--stl-muted);
+  color: var(--stl-gray);
 }
 
 .stl-sidebar .nav-link {
   border-radius: 999px;
-  color: #4b5563;
+  color: var(--stl-gray-dark);
   font-size: 0.9rem;
   padding: 0.45rem 0.9rem;
   margin-bottom: 0.2rem;
-  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .stl-sidebar .nav-link:hover {
-  background-color: #e5f0ff;
+  background-color: var(--stl-blue-soft);
   color: var(--stl-navy);
   transform: translateX(1px);
+  box-shadow: 0 0 8px var(--stl-yellow-glow);
 }
 
 .stl-sidebar .nav-link.active {
   background: var(--stl-navy);
-  color: #f9fafb;
+  color: var(--stl-blue);
+  box-shadow: 0 0 12px var(--stl-yellow-glow);
 }
 
-/* Cards */
+/* ============================================================
+   CARDS & PANELS
+   ============================================================ */
 
-.card {
+.card,
+.panel,
+.well,
+.stl-card {
+  background: var(--st-surface);
   border-radius: 1rem;
-  border: 1px solid rgba(15, 23, 42, 0.05);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+  border: 1px solid var(--st-border);
+  box-shadow: 0 18px 40px rgba(12, 28, 44, 0.06);
 }
 
-/* Buttons */
+.stl-card-large { padding: 0.6rem; }
+.stl-card-header { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--st-border); }
+.stl-card-title { font-size: 1.1rem; font-weight: 600; color: var(--stl-navy); }
+.stl-card-meta { font-size: 0.9rem; color: var(--stl-gray); }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
 
 .btn {
   border-radius: 999px;
   font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-.btn-primary {
+.btn-primary,
+.btn-success,
+.st-button-primary {
   background: var(--stl-navy);
   border-color: var(--stl-navy);
+  color: var(--stl-blue);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-success:hover,
+.st-button-primary:hover {
   background: var(--stl-navy-soft);
   border-color: var(--stl-navy-soft);
+  color: var(--stl-blue);
+  box-shadow: 0 0 16px var(--stl-yellow-glow);
 }
 
+.btn-default,
+.st-button-outline,
 .btn-outline-secondary {
-  border-color: var(--stl-border);
-  color: #374151;
-}
-
-.btn-outline-secondary:hover {
-  background: #e5f0ff;
+  background: transparent;
+  border: 1px solid var(--stl-navy);
   color: var(--stl-navy);
-  border-color: #d1e3ff;
 }
 
-.btn-success {
-  background: #16a34a;
-  border-color: #16a34a;
+.btn-default:hover,
+.st-button-outline:hover,
+.btn-outline-secondary:hover {
+  background: var(--stl-blue-soft);
+  border-color: var(--stl-navy);
+  color: var(--stl-navy);
+  box-shadow: 0 0 8px var(--stl-yellow-glow);
 }
 
-/* Pills for filters / legend */
+.st-button-ghost {
+  background: transparent;
+  border-color: var(--st-border);
+  color: var(--stl-gray-dark);
+  border: 1px solid var(--st-border);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
 
-.stl-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.7rem;
+.st-button-ghost:hover {
+  background: var(--stl-blue-soft);
+  color: var(--stl-navy);
+  border-color: var(--stl-blue);
+}
+
+.st-sidebar-button {
+  width: 100%;
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--st-border);
+  background: var(--st-surface);
+  color: var(--stl-navy);
+  font-weight: 600;
+}
+
+.st-sidebar-button:hover {
+  background: var(--stl-blue-soft);
+  box-shadow: 0 0 8px var(--stl-yellow-glow);
+}
+
+.st-button {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ============================================================
+   ALERTS & BADGES
+   ============================================================ */
+
+.alert-info,
+.badge-info {
+  background-color: var(--stl-blue-soft);
+  color: var(--stl-navy);
+  border: 1px solid var(--stl-blue);
+}
+
+.alert {
+  border-radius: 0.9rem;
+}
+
+.stl-badge {
+  padding: 2px 8px;
   border-radius: 999px;
   font-size: 0.8rem;
-  border: 1px solid var(--stl-border);
-  background-color: #ffffff;
-  color: #374151;
+  font-weight: 600;
+  display: inline-block;
 }
 
-/* Tables */
+.stl-badge-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.stl-badge-confirmed {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.stl-badge-cancelled {
+  background: #f8d7da;
+  color: #842029;
+}
+
+/* ============================================================
+   TABLES
+   ============================================================ */
 
 .table {
   border-radius: 1rem;
@@ -146,26 +388,58 @@ body {
 }
 
 .table thead {
-  background: #f3f4f6;
+  background: var(--stl-cream);
 }
 
 .table thead th {
-  border-bottom: 1px solid var(--stl-border);
+  border-bottom: 1px solid var(--st-border);
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--stl-muted);
+  color: var(--stl-gray);
 }
 
 .table tbody tr {
-  border-bottom: 1px solid rgba(229, 231, 235, 0.7);
+  border-bottom: 1px solid var(--st-border);
 }
 
 .table-hover tbody tr:hover {
-  background-color: #eef2ff;
+  background-color: var(--stl-blue-soft);
 }
 
-/* Page title */
+/* ============================================================
+   FORM CONTROLS
+   ============================================================ */
+
+.form-control,
+.st-input,
+.form-select {
+  background-color: var(--st-surface);
+  border: 1px solid var(--st-border);
+  border-radius: 0.75rem;
+  color: var(--st-text);
+  padding: 0.6rem 1rem;
+}
+
+.form-control:focus,
+.st-input:focus,
+.form-select:focus {
+  border-color: var(--stl-blue);
+  box-shadow: 0 0 0 3px var(--stl-yellow-glow);
+  background-color: var(--st-surface);
+  outline: none;
+}
+
+.form-label,
+.st-label {
+  color: var(--st-text);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* ============================================================
+   PAGE TITLES & TEXT
+   ============================================================ */
 
 .stl-page-title {
   font-size: 1.4rem;
@@ -173,7 +447,24 @@ body {
   color: var(--stl-navy);
 }
 
-/* Small status dot */
+.stl-link-sm {
+  font-size: 0.9rem;
+  color: var(--stl-navy);
+  text-decoration: none;
+}
+
+.stl-link-sm:hover {
+  text-decoration: underline;
+  color: var(--stl-navy-soft);
+}
+
+.stl-link-danger {
+  color: #dc3545;
+}
+
+/* ============================================================
+   STATUS DOTS
+   ============================================================ */
 
 .stl-status-dot {
   width: 8px;
@@ -184,44 +475,628 @@ body {
 }
 
 .stl-status-available {
-  background-color: #22c55e;
+  background-color: #10b981;
 }
 
 .stl-status-booked {
   background-color: #f97316;
 }
 
-/* Floorplan canvas container (soft edges) */
+/* ============================================================
+   FLOORPLAN STYLES
+   ============================================================ */
 
 .stl-floorplan-frame {
   border-radius: 1.2rem;
-  background: #ffffff;
-  border: 1px solid var(--stl-border);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.04);
+  background: var(--st-surface);
+  border: 1px solid var(--st-border);
+  box-shadow: 0 18px 40px rgba(12, 28, 44, 0.04);
   padding: 1rem;
 }
 
-/* Inputs */
+/* ============================================================
+   MODALS
+   ============================================================ */
 
-.form-control,
-.form-select {
+.st-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.st-modal.is-open,
+.st-modal-open {
+  display: flex;
+}
+
+.st-modal-hidden {
+  display: none;
+}
+
+.st-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 28, 44, 0.65);
+  z-index: 1999;
+}
+
+.st-modal-dialog {
+  position: relative;
+  background: var(--st-surface);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 24px 60px rgba(12, 28, 44, 0.35);
+  border: 1px solid var(--st-border);
+}
+
+.st-modal-header,
+.st-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.st-modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--stl-navy);
+  margin: 0;
+}
+
+.st-modal-body {
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.st-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--stl-gray-dark);
+}
+
+.st-modal-close:hover {
+  color: var(--stl-navy);
+}
+
+body.st-modal-open {
+  overflow: hidden;
+}
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+
+.st-form-vertical .st-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.st-form-vertical .st-form-row.st-form-row-2 {
+  flex-direction: row;
+  gap: 0.75rem;
+}
+
+.st-form-vertical .st-form-row.st-form-row-2 label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .st-form-vertical .st-form-row.st-form-row-2 {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+/* ============================================================
+   BOOKING ACTIONS
+   ============================================================ */
+
+.booking-actions-cell {
+  white-space: nowrap;
+  text-align: right;
+  padding-right: 1rem;
+}
+
+.inline-form {
+  display: inline;
+}
+
+.booking-icon-btn {
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.1rem 0.3rem;
+  line-height: 1;
   border-radius: 999px;
-  border-color: var(--stl-border);
+  transition: background 0.15s ease, color 0.15s ease;
+  color: var(--stl-gray);
 }
 
-.form-control:focus,
-.form-select:focus {
+.booking-icon-btn:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+.booking-notes-btn {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--st-border);
+  background: var(--stl-cream);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  color: var(--stl-navy);
+  font-weight: 500;
+}
+
+.booking-notes-btn:hover {
+  background: var(--stl-blue-soft);
   border-color: var(--stl-blue);
-  box-shadow: 0 0 0 0.16rem rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 4px var(--stl-yellow-glow);
 }
 
-/* Alerts */
+/* ============================================================
+   DATE NAVIGATION
+   ============================================================ */
 
-.alert {
-  border-radius: 0.9rem;
+.bookings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-/* Subtle scrollbars (desktop only) */
+.bookings-header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.booking-date-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.booking-date-nav-btn {
+  border: none;
+  background: var(--stl-navy);
+  color: var(--stl-blue);
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  font-weight: 500;
+}
+
+.booking-date-nav-btn:hover {
+  background: var(--stl-navy-soft);
+  color: var(--stl-blue);
+  box-shadow: 0 0 8px var(--stl-yellow-glow);
+}
+
+.booking-date-label {
+  font-weight: 600;
+  color: var(--stl-navy);
+  padding: 0 0.25rem;
+}
+
+.booking-date-picker-form {
+  margin-left: 0.5rem;
+}
+
+.booking-date-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.booking-date-picker-icon {
+  position: absolute;
+  left: 0.5rem;
+  pointer-events: none;
+  font-size: 0.9rem;
+  color: var(--stl-gray);
+}
+
+.booking-date-picker-input {
+  padding: 0.25rem 0.6rem 0.25rem 1.8rem;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--st-border);
+  background: var(--st-surface);
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.booking-date-picker-input:hover {
+  border-color: var(--stl-blue);
+  box-shadow: 0 0 4px var(--stl-yellow-glow);
+}
+
+.bookings-header-meta {
+  font-size: 0.9rem;
+  color: var(--stl-gray);
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .bookings-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .bookings-header-meta {
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   EMPTY STATES
+   ============================================================ */
+
+.stl-empty-state {
+  color: var(--stl-gray);
+}
+
+.stl-empty-state-padded {
+  padding: 1.25rem;
+  border: 1px dashed var(--st-border);
+  border-radius: 0.75rem;
+  background: var(--st-surface);
+}
+
+/* ============================================================
+   PILLS & FILTERS
+   ============================================================ */
+
+.stl-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  border: 1px solid var(--st-border);
+  background-color: var(--st-surface);
+  color: var(--stl-gray-dark);
+}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+
+.stl-timeline {
+  position: relative;
+  margin: 12px 0;
+  padding-left: 140px;
+}
+
+.stl-timeline:before {
+  content: "";
+  position: absolute;
+  left: 120px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--st-border);
+}
+
+.stl-timeline-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin: 16px 0;
+}
+
+.stl-timeline-time {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 110px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--stl-navy);
+}
+
+.stl-timeline-dot {
+  position: absolute;
+  left: 114px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  background: var(--stl-navy);
+  border: 2px solid var(--st-surface);
+  box-shadow: 0 0 0 2px var(--stl-yellow-glow);
+  border-radius: 50%;
+}
+
+.stl-timeline-content {
+  margin-left: 24px;
+  background: var(--st-surface);
+  border: 1px solid var(--st-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  flex: 1;
+}
+
+.stl-timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stl-timeline-title {
+  font-weight: 600;
+  color: var(--stl-navy);
+}
+
+.stl-timeline-meta {
+  color: var(--stl-gray);
+  font-size: 0.9rem;
+}
+
+.stl-timeline-notes {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: var(--stl-gray-dark);
+}
+
+.stl-timeline-actions {
+  margin-top: 8px;
+}
+
+/* ============================================================
+   CALENDAR GRID
+   ============================================================ */
+
+.calendar-card {
+  overflow: hidden;
+}
+
+.calendar-body {
+  padding: 0;
+  overflow-x: auto;
+}
+
+.calendar-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.calendar-grid {
+  border-collapse: collapse;
+  min-width: 100%;
+  font-size: 0.85rem;
+  width: max-content;
+}
+
+.calendar-grid th,
+.calendar-grid td {
+  border: 1px solid var(--st-border);
+  padding: 0.4rem 0.5rem;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.calendar-table-col {
+  position: sticky;
+  left: 0;
+  background: var(--stl-cream);
+  z-index: 10;
+  font-weight: 600;
+  color: var(--stl-navy);
+  min-width: 100px;
+  text-align: left;
+}
+
+.calendar-table-cell {
+  position: sticky;
+  left: 0;
+  background: var(--stl-cream);
+  z-index: 9;
+  font-weight: 500;
+  color: var(--stl-navy);
+  min-width: 100px;
+  text-align: left;
+}
+
+.calendar-time-col {
+  text-align: center;
+  font-weight: 500;
+  background: var(--stl-cream);
+  color: var(--stl-navy);
+  min-width: 60px;
+  font-size: 0.8rem;
+}
+
+.calendar-empty-cell {
+  background: var(--st-surface);
+  min-width: 60px;
+  height: 45px;
+}
+
+.calendar-booking-cell {
+  padding: 0.25rem;
+  background: var(--st-surface);
+}
+
+.calendar-booking-pill {
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  background: var(--stl-blue-soft);
+  border: 1px solid var(--stl-blue);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--stl-navy);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+
+.calendar-booking-pill:hover {
+  background: var(--stl-blue);
+  border-color: var(--stl-navy);
+  cursor: pointer;
+  box-shadow: 0 0 8px var(--stl-yellow-glow);
+}
+
+.calendar-dragging {
+  opacity: 0.5;
+  cursor: grabbing !important;
+}
+
+.calendar-drop-target {
+  outline: 2px dashed var(--stl-navy);
+  outline-offset: -2px;
+  background-color: var(--stl-blue-soft) !important;
+}
+
+.calendar-booking-pill[draggable="true"] {
+  cursor: grab;
+}
+
+.calendar-booking-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-edit-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.15rem 0.3rem;
+  line-height: 1;
+  color: var(--stl-navy);
+  opacity: 0.7;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.calendar-edit-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.calendar-edit-btn:active {
+  transform: scale(1);
+}
+
+.calendar-edit-btn {
+  pointer-events: auto;
+}
+
+/* ============================================================
+   TIME SLOT PICKER
+   ============================================================ */
+
+.st-time-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.st-time-help {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  color: var(--st-text-muted);
+}
+
+.st-time-slot {
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--st-border);
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: var(--st-surface);
+  color: var(--stl-navy);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s, box-shadow 0.15s ease;
+  font-weight: 500;
+}
+
+.st-time-slot:hover:not(.is-disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px var(--stl-yellow-glow);
+  border-color: var(--stl-blue);
+}
+
+.st-time-slot.is-selected {
+  background: var(--stl-navy);
+  border-color: var(--stl-navy);
+  color: var(--stl-blue);
+  box-shadow: 0 2px 8px var(--stl-yellow-glow);
+}
+
+.st-time-slot.is-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: var(--stl-cream);
+  color: var(--stl-gray-light);
+}
+
+/* ============================================================
+   BOOKING EDIT BUTTONS
+   ============================================================ */
+
+.booking-edit-btn {
+  padding: 0.3rem 0.6rem;
+  margin: 0 0.25rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--stl-gray-lighter);
+  border-radius: 4px;
+  background: var(--st-surface);
+  color: var(--stl-gray-dark);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-weight: 500;
+}
+
+.booking-edit-btn:hover {
+  background: var(--stl-cream);
+  border-color: var(--stl-gray);
+  transform: translateY(-1px);
+  box-shadow: 0 0 4px var(--stl-yellow-glow);
+}
+
+.booking-edit-btn:active {
+  transform: translateY(0);
+}
+
+/* ============================================================
+   SCROLLBARS
+   ============================================================ */
 
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
@@ -232,118 +1107,305 @@ body {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: rgba(15, 23, 42, 0.15);
+    background-color: var(--stl-gray-light);
     border-radius: 999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(15, 23, 42, 0.3);
+    background-color: var(--stl-gray);
   }
 }
 
-/* --- Calendar / Timeline styles --- */
-.stl-card {
-  background: #ffffff;
-  border-radius: 1rem;
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.05);
-  margin-bottom: 1rem;
-}
-.stl-card-large { padding: 0.6rem; }
-.stl-card-header { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--stl-border); }
-.stl-card-title { font-size: 1.1rem; font-weight: 600; color: var(--stl-navy); }
-.stl-card-meta { font-size: 0.9rem; color: var(--stl-muted); }
+/* ============================================================
+   FLOORPLAN - MODE TOGGLE & TABLES
+   ============================================================ */
 
-.stl-timeline {
-  position: relative;
-  margin: 12px 0;
-  padding-left: 140px; /* space for time column */
+.floorplan-mode-toggle {
+  display: inline-flex;
+  gap: 0;
+  border: 2px solid var(--stl-navy);
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
-.stl-timeline:before {
-  content: "";
-  position: absolute;
-  left: 120px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--stl-border);
+
+.st-toggle-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--stl-navy);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-right: 1px solid var(--stl-navy);
 }
-.stl-timeline-item {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  margin: 16px 0;
+
+.st-toggle-btn:last-child {
+  border-right: none;
 }
-.stl-timeline-time {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 110px;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  color: #0d1b2a;
+
+.st-toggle-btn:hover {
+  background: var(--stl-blue-soft);
 }
-.stl-timeline-dot {
-  position: absolute;
-  left: 114px;
-  top: 6px;
-  width: 12px;
-  height: 12px;
-  background: #0d6efd;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 2px #0d6efd44;
-  border-radius: 50%;
+
+.st-toggle-btn.is-active {
+  background: var(--stl-navy);
+  color: var(--stl-blue);
+  box-shadow: inset 0 0 12px var(--stl-yellow-glow);
 }
-.stl-timeline-content {
-  margin-left: 24px;
-  background: #fff;
-  border: 1px solid var(--stl-border);
-  border-radius: 10px;
-  padding: 10px 12px;
+
+/* Floorplan table state colors (Service view) */
+.fp-table--state-empty {
+  fill: var(--stl-blue) !important;
+  stroke: var(--stl-navy);
+  stroke-width: 2;
+}
+
+.fp-table--state-upcoming {
+  fill: var(--stl-yellow) !important;
+  stroke: var(--stl-navy);
+  stroke-width: 2;
+}
+
+.fp-table--state-occupied {
+  fill: #ef4444 !important;
+  stroke: var(--stl-navy);
+  stroke-width: 2;
+}
+
+/* Edit mode - default gray */
+.fp-table--edit-mode {
+  fill: var(--stl-gray-lighter);
+  stroke: var(--stl-gray);
+  stroke-width: 1;
+}
+
+#floorplanCanvas {
+  cursor: default;
+}
+
+#floorplanCanvas.edit-mode {
+  cursor: grab;
+}
+
+#floorplanCanvas.edit-mode:active {
+  cursor: grabbing;
+}
+
+/* Floorplan layout with side panel */
+.floorplan-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(280px, 1fr);
+  gap: 1.5rem;
+}
+
+.floorplan-card {
+  overflow: hidden;
+}
+
+.st-card {
+  background: var(--st-surface);
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(12, 28, 44, 0.1);
+}
+
+.st-card-body {
+  padding: 1.5rem;
+}
+
+.st-card-main {
   flex: 1;
 }
-.stl-timeline-header { display: flex; justify-content: space-between; align-items: center; }
-.stl-timeline-title { font-weight: 600; }
-.stl-timeline-meta { color: var(--stl-muted); font-size: 0.9rem; }
-.stl-timeline-notes { margin-top: 6px; font-size: 0.95rem; }
-.stl-timeline-actions { margin-top: 8px; }
 
-/* Badges and links */
-.stl-badge { padding: 2px 8px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
-.stl-badge-pending { background: #fff3cd; color: #856404; }
-.stl-badge-confirmed { background: #d1e7dd; color: #0f5132; }
-.stl-badge-cancelled { background: #f8d7da; color: #842029; }
-.stl-link-sm { font-size: 0.9rem; color: #0d6efd; text-decoration: none; }
-.stl-link-sm:hover { text-decoration: underline; }
-.stl-link-danger { color: #dc3545; }
-
-/* Empty state */
-.stl-empty-state {
-  color: var(--stl-muted);
+/* Table details side panel */
+.floorplan-details {
+  background: var(--stl-cream);
+  border-radius: 1.25rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 0 0 1px var(--st-border);
+  align-self: flex-start;
+  position: sticky;
+  top: 1rem;
 }
-.stl-empty-state-padded {
-  padding: 1.25rem;
-  border: 1px dashed var(--stl-border);
+
+.floorplan-details-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--st-text);
+}
+
+.floorplan-details .st-form-group {
+  margin-bottom: 0.75rem;
+}
+
+.floorplan-details .st-form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: var(--st-text);
+}
+
+.st-input,
+.st-select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--st-border);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.fp-detail-combos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  margin-top: 0.35rem;
+}
+
+.fp-detail-combos-badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--stl-gray-lighter);
+  background: var(--stl-cream);
+  color: var(--stl-gray-dark);
+  font-weight: 500;
+}
+
+.floorplan-details-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+[data-floorplan-mode="service"] .floorplan-details {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.fp-table--selected {
+  box-shadow: 0 0 0 3px var(--stl-yellow) !important;
+  filter: brightness(1.1);
+}
+
+/* ============================================================
+   LANDMARKS (Floorplan Overlays)
+   ============================================================ */
+
+[data-floorplan-mode] .landmark {
+  position: absolute;
+  background: var(--stl-blue-soft);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  user-select: none;
+  color: var(--stl-navy);
+  padding: 4px 10px;
+  box-sizing: border-box;
+}
+
+[data-floorplan-mode] .landmark-label {
+  pointer-events: none;
+}
+
+.edit-mode .landmark,
+[data-floorplan-mode="edit"] .landmark {
+  border: 2px dashed var(--stl-gray);
+}
+
+.landmark .resize-handle {
+  width: 10px;
+  height: 10px;
+  background: var(--stl-gray);
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  cursor: se-resize;
+  border-radius: 2px;
+}
+
+.edit-mode .landmark.is-dragging,
+[data-floorplan-mode="edit"] .landmark.is-dragging {
+  box-shadow: 0 0 0 3px var(--stl-yellow-glow);
+}
+
+.floorplan-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.floorplan-overlay .landmark,
+.floorplan-overlay .fp-landmark {
+  pointer-events: auto;
+}
+
+.fp-landmark {
+  position: absolute;
   border-radius: 0.75rem;
-  background: #fff;
+  border: 1px dashed var(--stl-gray-light);
+  background: rgba(247, 244, 238, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.6rem;
+  box-sizing: border-box;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--stl-navy);
+  backdrop-filter: blur(2px);
+  user-select: none;
+  transition: box-shadow .15s ease, transform .15s ease;
 }
 
-/* --- Modal styles (Seatelligence) --- */
-.st-modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 2000; }
-.st-modal-open { display: flex; }
-.st-modal-hidden { display: none; }
-.st-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
-.st-modal-dialog { position: relative; background: #ffffff; border-radius: 1rem; padding: 1.25rem 1.5rem; max-width: 520px; width: 100%; box-shadow: 0 24px 60px rgba(0,0,0,0.25); border: 1px solid var(--stl-border); }
-.st-modal-header, .st-modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
-.st-modal-title { font-size: 1.25rem; font-weight: 600; color: var(--stl-navy); margin: 0; }
-.st-modal-body { margin-top: 0.75rem; margin-bottom: 1rem; position: relative; z-index: 1; }
-.st-modal-close { background: transparent; border: none; font-size: 1.25rem; cursor: pointer; color: #374151; }
-.st-form-vertical .st-form-row { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.75rem; }
-.st-input { border: 1px solid var(--stl-border); border-radius: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.95rem; }
-.st-input:focus { outline: none; border-color: var(--stl-blue); box-shadow: 0 0 0 0.16rem rgba(59, 130, 246, 0.25); }
-.st-button { border-radius: 999px; border: 1px solid transparent; padding: 0.45rem 0.9rem; font-weight: 600; cursor: pointer; }
-.st-button-primary { background: var(--stl-navy); color: #fff; border-color: var(--stl-navy); }
-.st-button-primary:hover { background: var(--stl-navy-soft); border-color: var(--stl-navy-soft); }
-.st-button-ghost { background: transparent; border-color: var(--stl-border); color: #374151; }
-.st-button-ghost:hover { background: #eef2ff; color: var(--stl-navy); border-color: #d1e3ff; }
-.st-sidebar-button { width: 100%; border-radius: 999px; padding: 0.5rem 0.9rem; border: 1px solid var(--stl-border); background: #fff; color: var(--stl-navy); font-weight: 600; }
-.st-sidebar-button:hover { background: #e5f0ff; }
+.fp-landmark-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  line-height: 1;
+}
+
+.fp-landmark--entrance {
+  border-color: #10b981;
+  background: rgba(209, 250, 229, 0.9);
+}
+
+.fp-landmark--bar {
+  border-color: var(--stl-blue);
+  background: rgba(185, 223, 245, 0.9);
+}
+
+.fp-landmark--bathroom {
+  border-color: #a855f7;
+  background: rgba(237, 233, 254, 0.9);
+}
+
+[data-floorplan-mode="edit"] .fp-landmark {
+  cursor: grab;
+}
+
+[data-floorplan-mode="edit"] .fp-landmark.is-dragging {
+  cursor: grabbing;
+  box-shadow: 0 0 0 3px var(--stl-yellow-glow);
+}
+
+[data-floorplan-mode="service"] .fp-landmark {
+  cursor: default;
+}
+
+.floorplan-canvas-wrapper {
+  position: relative;
+}
+
+.floorplan-canvas-wrapper canvas {
+  position: relative;
+  z-index: 1;
+}
+
+.floorplan-overlay {
+  z-index: 5;
+}

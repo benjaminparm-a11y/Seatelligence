@@ -1,0 +1,23 @@
+{
+  "entrance": {
+    "x": 123,
+    "y": 77,
+    "width": 90,
+    "height": 36,
+    "label": "Entrance"
+  },
+  "bar": {
+    "x": 480,
+    "y": 60,
+    "width": 140,
+    "height": 48,
+    "label": "Bar"
+  },
+  "wc": {
+    "x": 700,
+    "y": 260,
+    "width": 110,
+    "height": 44,
+    "label": "WC"
+  }
+}

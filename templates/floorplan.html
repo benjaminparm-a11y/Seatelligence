@@ -8,42 +8,396 @@
     <h1 class="stl-page-title mb-0">Floorplan</h1>
     <div class="text-muted small">Arrange tables and visualize occupancy</div>
   </div>
-  <div class="d-flex gap-2">
-    <button class="btn btn-outline-secondary" id="resetLayoutBtn">Reset layout</button>
-    <button class="btn btn-primary" id="saveLayoutBtn">Save layout</button>
-    <button class="btn btn-outline-secondary" id="autoAssignBtn">Auto-assign</button>
-  </div>
-</div>
-{% endblock %}
-
-{% block page_content %}
-<div class="card stl-card">
-  <div class="card-body">
-    <div class="stl-floorplan-frame">
-      <canvas id="floorplanCanvas" class="w-100" height="600"></canvas>
+  <div class="d-flex gap-2 align-items-center">
+    <div class="floorplan-mode-toggle">
+      <button type="button"
+              class="st-toggle-btn is-active"
+              id="floorplanModeService">
+        Service view
+      </button>
+      <button type="button"
+              class="st-toggle-btn"
+              id="floorplanModeEdit">
+        Edit layout
+      </button>
     </div>
   </div>
 </div>
 {% endblock %}
 
+{% block page_content %}
+
+<style>
+  .floorplan-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) 320px;
+    gap: 16px;
+  }
+
+  .fp-canvas {
+    position: relative;
+    height: 600px;
+    border-radius: 16px;
+    background-color: var(--stl-cream);
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px var(--st-border);
+    background-image:
+      linear-gradient(to right, rgba(185,223,245,.25) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(185,223,245,.25) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .fp-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .fp-table {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--stl-gray-lighter);
+    border: 2px solid var(--stl-gray);
+    color: var(--stl-navy);
+    font-weight: 600;
+    font-size: 14px;
+    user-select: none;
+    pointer-events: auto;
+    box-sizing: border-box;
+    padding: 0 4px;
+    cursor: default;
+    transition: background .15s, border-color .15s, box-shadow .15s;
+  }
+
+  .fp-table--square {
+    border-radius: 8px;
+  }
+
+  .fp-table--round {
+    border-radius: 9999px;
+  }
+
+  .fp-table--landmark {
+    background: rgba(185,223,245,.3);
+    border-color: var(--stl-blue);
+    color: var(--stl-navy);
+  }
+
+  .fp-canvas.edit-mode .fp-table {
+    cursor: move;
+  }
+
+  .fp-table-resize {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 2px;
+    border: 2px solid #fff;
+    background: var(--stl-gray-dark);
+    cursor: se-resize;
+    opacity: 0;
+    transition: opacity .15s, background .15s;
+    box-sizing: border-box;
+  }
+
+  .fp-canvas.edit-mode .fp-table:hover .fp-table-resize {
+    opacity: 1;
+  }
+
+  .fp-canvas.service-mode .fp-table-resize {
+    display: none;
+  }
+
+  .floorplan-details {
+    background: var(--st-surface);
+    border-radius: 16px;
+    padding: 16px;
+  }
+
+  .floorplan-details-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .fp-shape-options label {
+    cursor: pointer;
+  }
+
+  .fp-shape-options input {
+    margin-right: 4px;
+  }
+</style>
+
+<div class="st-page-body floorplan-layout">
+  <!-- LEFT: GRID + TABLES -->
+  <section class="st-card st-card-main floorplan-card">
+    <div class="st-card-body">
+      <div id="fpCanvas" class="fp-canvas service-mode">
+        <div class="fp-overlay" id="fpOverlay">
+          {% for table in tables %}
+            <div
+              class="fp-table
+                      {% if table.is_landmark %} fp-table--landmark{% endif %}
+                      {% if table.shape == 'round' %} fp-table--round{% else %} fp-table--square{% endif %}"
+              data-id="{{ table.id }}"
+              data-name="{{ table.name }}"
+              data-capacity="{{ table.capacity }}"
+              data-shape="{{ table.shape }}"
+              data-section="{{ table.section or 'Main' }}"
+              data-bookable="{{ 'false' if table.bookable is defined and not table.bookable else 'true' }}"
+              data-is-landmark="{{ 'true' if table.is_landmark else 'false' }}"
+              style="
+                left: {{ table.x }}px;
+                top: {{ table.y }}px;
+                width: {{ table.width|default(60, true) }}px;
+                height: {{ table.height|default(60, true) }}px;
+              "
+            >
+              <span class="fp-table-label">{{ table.name }}</span>
+              <div class="fp-table-resize"></div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT: DETAILS PANEL -->
+  <aside class="floorplan-details" id="floorplanDetailsPanel">
+    <h2 class="floorplan-details-title">Table details</h2>
+
+    <div id="fpDetailsEmpty">
+      <p class="text-muted small">
+        Select a table in <strong>Edit layout</strong> mode to change its label,
+        capacity, section or shape.
+      </p>
+    </div>
+
+    <form id="fpDetailsForm" hidden>
+      <input type="hidden" id="fp-detail-id">
+
+      <div class="st-form-group">
+        <label for="fp-detail-name">Label</label>
+        <input type="text" id="fp-detail-name" class="st-input form-control">
+      </div>
+
+      <div class="st-form-group">
+        <label for="fp-detail-capacity">Capacity</label>
+        <input type="number" id="fp-detail-capacity" class="st-input form-control" min="0">
+      </div>
+
+      <div class="st-form-group">
+        <label for="fp-detail-section">Section</label>
+        <select id="fp-detail-section" class="st-select form-select">
+          <option value="Main">Main</option>
+          <option value="Bar">Bar</option>
+          <option value="Terrace">Terrace</option>
+          <option value="Landmarks">Landmarks</option>
+        </select>
+      </div>
+
+      <div class="st-form-group">
+        <span class="st-label">Shape</span>
+        <div class="fp-shape-options d-flex gap-3">
+          <label class="d-flex align-items-center">
+            <input type="radio" name="fp-detail-shape" value="round" id="fp-detail-shape-round">
+            <span>Round</span>
+          </label>
+          <label class="d-flex align-items-center">
+            <input type="radio" name="fp-detail-shape" value="square" id="fp-detail-shape-square">
+            <span>Square</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary" id="fp-detail-cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="fp-detail-apply">Apply</button>
+      </div>
+    </form>
+  </aside>
+</div>
+
+<style>
+/* ============================================================
+   FLOORPLAN STYLES
+   ============================================================ */
+
+.floorplan-layout {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.floorplan-card {
+  flex: 1;
+}
+
+.floorplan-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background: var(--st-surface);
+  border: 1px solid var(--st-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Background grid (optional visual aid) */
+.floorplan-canvas-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(var(--st-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--st-border) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Table overlay container */
+.floorplan-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+/* ============================================================
+   FP-TABLE STYLES
+   ============================================================ */
+
+.fp-table {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--stl-gray-lighter);
+  border: 2px solid var(--stl-gray);
+  color: var(--stl-gray-dark);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.fp-table:hover {
+  background: var(--stl-gray-light);
+  border-color: var(--stl-gray-dark);
+  box-shadow: 0 2px 8px var(--stl-yellow-glow);
+}
+
+/* Round table */
+.fp-table--round {
+  border-radius: 50%;
+}
+
+/* Square table */
+.fp-table--square {
+  border-radius: 6px;
+}
+
+/* Landmark table */
+.fp-table--landmark {
+  background: rgba(185, 223, 245, 0.3);
+  border: 2px solid var(--stl-blue);
+  color: var(--stl-navy);
+}
+
+.fp-table--landmark:hover {
+  background: rgba(185, 223, 245, 0.5);
+  border-color: var(--stl-navy);
+}
+
+/* Selected table */
+.fp-table.is-selected {
+  border-color: var(--stl-navy);
+  box-shadow: 0 0 0 3px var(--stl-yellow-glow);
+}
+
+/* Resize handle */
+.fp-table__resize-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  right: -6px;
+  bottom: -6px;
+  background: var(--stl-navy);
+  border: 2px solid white;
+  border-radius: 2px;
+  cursor: se-resize;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 20;
+}
+
+.edit-mode .fp-table__resize-handle {
+  opacity: 0.9;
+}
+
+.edit-mode .fp-table:hover .fp-table__resize-handle {
+  opacity: 1;
+  background: var(--stl-navy-soft);
+}
+
+/* Service mode - landmarks semi-transparent and non-interactive */
+.service-mode .fp-table--landmark {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.service-mode .fp-table__resize-handle {
+  display: none;
+}
+
+/* Edit mode - draggable cursor */
+.edit-mode .fp-table {
+  cursor: move;
+}
+
+/* ============================================================
+   DETAILS PANEL (RIGHT SIDEBAR)
+   ============================================================ */
+
+.floorplan-details {
+  width: 320px;
+  flex-shrink: 0;
+  background: var(--st-surface);
+  border: 1px solid var(--st-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.floorplan-details-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.floorplan-details-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.fp-detail-combos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+</style>
+
+{% endblock %}
+
 {% block scripts %}
   {{ super() }}
   <script id="tables-data" type="application/json">{{ tables | tojson | safe }}</script>
+  <script id="table-status-data" type="application/json">{{ table_status | tojson | safe }}</script>
   <script src="{{ url_for('static', filename='js/floorplan.js') }}"></script>
-  <script>
-    // Boot the floorplan view if a global initializer exists
-    window.addEventListener('DOMContentLoaded', function () {
-      const dataEl = document.getElementById('tables-data');
-      let tables = [];
-      try {
-        tables = JSON.parse((dataEl && dataEl.textContent) || '[]');
-      } catch (e) {
-        tables = [];
-      }
-      if (window.Seatelligence && typeof window.Seatelligence.initFloorplan === 'function') {
-        const canvas = document.getElementById('floorplanCanvas');
-        window.Seatelligence.initFloorplan(canvas, { tables });
-      }
-    });
-  </script>
 {% endblock %}

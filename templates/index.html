@@ -1,338 +1,92 @@
 {% extends "base.html" %}
-{% block content %}
-<style>
-  body { font-family: sans-serif; margin: 20px; }
-    
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 30px;
-      max-width: 1400px;
-    }
-    
-    .left-column {
-      min-width: 350px;
-    }
-    
-    .right-column {
-      min-width: 600px;
-    }
-    
-    @media (max-width: 1000px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
-    }
-    
-    #tables { margin-top: 20px; }
-    .table-box {
-      border: 1px solid #ccc;
-      padding: 6px 10px;
-      margin-bottom: 6px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-right: 6px;
-    }
-    pre {
-      background: #f7f7f7;
-      padding: 10px;
-      border-radius: 6px;
-    }
-    .popup {
-      position: absolute;
-      background: #ffffff;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      padding: 8px 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      font-size: 13px;
-      max-width: 280px;
-      z-index: 1000;
-    }
-    .popup .title { font-weight: 600; margin-bottom: 4px; }
-    .popup .close { position: absolute; right: 6px; top: 4px; cursor: pointer; color: #666; }
-    
-    #table-details {
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      padding: 12px;
-      background: #f9f9f9;
-      min-height: 100px;
-      max-width: 400px;
-    }
-    #table-details h3 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      color: #333;
-    }
-    #table-details .no-selection {
-      color: #999;
-      font-style: italic;
-    }
-    #table-details .booking-item {
-      padding: 6px;
-      margin: 4px 0;
-      background: #fff;
-      border-left: 3px solid #4CAF50;
-      border-radius: 3px;
-    }
-    
-    .legend {
-      display: flex;
-      gap: 20px;
-      margin: 10px 0;
-      padding: 8px 12px;
-      background: #f5f5f5;
-      border-radius: 4px;
-      font-size: 13px;
-      align-items: center;
-    }
-    
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    
-    .legend-color {
-      width: 20px;
-      height: 20px;
-      border-radius: 3px;
-      border: 1px solid #666;
-    }
-    
-    .legend-color.available {
-      background: #c8e6c9;
-    }
-    
-    .legend-color.booked {
-      background: #ffcdd2;
-    }
-    
-    .legend-color.neutral {
-      background: #e0e0e0;
-    }
-    
-    .controls {
-      background: #f5f5f5;
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-    }
-    
-    .controls label {
-      display: inline-block;
-      margin-right: 5px;
-      font-weight: 500;
-    }
-    
-    .controls input, .controls button {
-      margin-bottom: 10px;
-    }
-    
-    button {
-      background: #4CAF50;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    
-    button:hover {
-      background: #45a049;
-    }
-    
-    input[type="text"], input[type="number"], input[type="date"], input[type="time"] {
-      padding: 6px 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-    
-    h1 {
-      margin-top: 0;
-      margin-bottom: 20px;
-      color: #333;
-    }
-    
-    h2 {
-      color: #444;
-      margin-top: 20px;
-      margin-bottom: 12px;
-      font-size: 18px;
-    }
 
-    /* Small action buttons inside table */
-    .btn-small {
-      padding: 4px 8px;
-      font-size: 12px;
-      margin-right: 4px;
-      background: #1976d2;
-    }
-    .btn-small:hover { background: #1565c0; }
-    .btn-danger { background: #e53935; }
-    .btn-danger:hover { background: #c62828; }
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <div class="stl-page-title">Bookings</div>
+  </div>
+  <div>
+    <button id="openCreateBookingModalHeader" class="btn btn-primary btn-sm">+ New booking</button>
+  </div>
+</div>
+{% endblock %}
 
-    /* Bookings summary */
-    #bookings-summary {
-      background: #f0f7ff;
-      border: 1px solid #cfe3ff;
-      color: #0b3d91;
-      padding: 10px 12px;
-      border-radius: 6px;
-      margin: 8px 0 12px 0;
-      font-size: 14px;
-    }
-    
-    .canvas-container {
-      display: flex;
-      gap: 20px;
-      margin-top: 10px;
-    }
-    
-    #status-bar {
-      padding: 12px 16px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      font-weight: 500;
-      display: none;
-      transition: all 0.3s ease;
-    }
-    
-    #status-bar.success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-      display: block;
-    }
-    
-    #status-bar.error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-      display: block;
-    }
-    
-    #status-bar.info {
-      background: #d1ecf1;
-      color: #0c5460;
-      border: 1px solid #bee5eb;
-      display: block;
-    }
-</style>
-
+{% block page_content %}
 <div id="status-bar"></div>
 
-<div class="row">
-    <aside class="col-md-3 col-lg-2 stl-sidebar">
-      <div class="px-3">
-        <h6 class="mb-3">Views</h6>
-        <nav class="nav flex-column mb-4">
-          <a class="nav-link active" href="#">Bookings list</a>
-          <a class="nav-link" href="#">Floorplan</a>
-          <a class="nav-link" href="#">Calendar</a>
-        </nav>
+<section class="stl-card stl-card-large mt-3">
+  <div class="stl-card-header bookings-header">
+    <div class="bookings-header-main">
+      <h2 class="stl-card-title mb-0">Bookings</h2>
+      
+      <div class="booking-date-nav">
+        <!-- Previous day -->
+        <a href="{{ url_for('index', date=prev_date.isoformat()) }}"
+           class="booking-date-nav-btn"
+           aria-label="Previous day">
+          ←
+        </a>
 
-        <h6 class="mb-3">Actions</h6>
-        <button class="btn btn-primary w-100 mb-2" onclick="document.getElementById('name').focus()">New booking</button>
-        <button class="btn btn-outline-secondary w-100 mb-2" onclick="optimizeLayout()">Optimize layout</button>
+        <!-- Current date label -->
+        <span class="booking-date-label">
+          {{ current_date.strftime("%A %d %B %Y") }}
+        </span>
+
+        <!-- Next day -->
+        <a href="{{ url_for('index', date=next_date.isoformat()) }}"
+           class="booking-date-nav-btn"
+           aria-label="Next day">
+          →
+        </a>
+
+        <!-- Calendar / date picker -->
+        <form method="get"
+              action="{{ url_for('index') }}"
+              class="booking-date-picker-form">
+          <label class="booking-date-picker">
+            <span class="booking-date-picker-icon" aria-hidden="true">📅</span>
+            <input
+              type="date"
+              name="date"
+              value="{{ current_date.isoformat() }}"
+              class="booking-date-picker-input"
+              onchange="this.form.submit()">
+          </label>
+        </form>
       </div>
-    </aside>
-
-    <main class="col-md-9 col-lg-10">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <div class="stl-page-title">Bookings</div>
-        </div>
-        <div>
-          <button id="openCreateBookingModalHeader" class="btn btn-primary btn-sm">+ New booking</button>
-        </div>
-      </div>
-
-  <div class="container">
-    <!-- Left Column: Controls & Bookings -->
-    <div class="left-column">
-      <div class="controls">
-        <h2 style="margin-top: 0;">Filters</h2>
-        <div>
-          <label for="date-input">Date:</label>
-          <input id="date-input" type="date" onchange="loadBookings()" />
-        </div>
-        <div>
-          <label for="time-filter">Time:</label>
-          <input id="time-filter" type="time" placeholder="e.g. 19:00" style="width:110px;" onchange="loadBookings()" />
-        </div>
-        <button onclick="loadBookings()">Load bookings</button>
-      </div>
-
-      <div class="controls">
-        <h2 style="margin-top: 0;">Create Booking</h2>
-        <div>
-          <input id="name" placeholder="Name" style="width: 100%; max-width: 250px;" />
-        </div>
-        <div>
-          <input id="party" placeholder="Party size" type="number" style="width: 100px;" />
-        </div>
-        <div>
-          <input id="start" placeholder="Start time (e.g. 19:00)" style="width: 150px;" />
-        </div>
-        <div>
-          <input id="end" placeholder="End time (e.g. 21:00)" style="width: 150px;" />
-        </div>
-        <button id="create-booking-btn" onclick="createBooking()">Create</button>
-        <span id="booking-loading" style="display: none; margin-left: 10px; color: #666; font-style: italic;">Saving...</span>
-      </div>
-
-      <h2>Bookings</h2>
-      <div id="bookings-summary">Total bookings: 0 • Total seats: 0</div>
-      <table id="bookings-table" style="border-collapse: collapse; width: 100%;">
-        <thead>
-          <tr style="background: #f0f0f0; border-bottom: 2px solid #ccc;">
-            <th style="padding: 8px; text-align: left;">Guest Name</th>
-            <th style="padding: 8px; text-align: left;">Party Size</th>
-            <th style="padding: 8px; text-align: left;">Start Time</th>
-            <th style="padding: 8px; text-align: left;">End Time</th>
-            <th style="padding: 8px; text-align: left;">Table ID</th>
-            <th style="padding: 8px; text-align: left;">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="bookings-body">
-          <tr>
-            <td colspan="6" style="padding: 12px; text-align: center; color: #999;">No bookings loaded</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h2>Tables</h2>
-      <div id="tables"></div>
     </div>
 
-    <!-- Right Column: Simplified Floorplan overview/link -->
-    <div class="right-column">
-      <section class="stl-card stl-card-large">
-        <div class="stl-card-header d-flex justify-content-between align-items-center">
-          <h2 class="stl-card-title mb-0">Floorplan</h2>
-          <span class="stl-card-meta">View and edit the full layout on the Floorplan page.</span>
-        </div>
-        <div class="p-3">
-          <p class="text-muted mb-3">
-            For full drag-and-drop editing, go to the dedicated Floorplan view.
-          </p>
-          <a href="{{ url_for('floorplan') }}" class="btn btn-outline-secondary btn-sm">
-            Open Floorplan
-          </a>
-        </div>
-      </section>
+    <div class="bookings-header-meta">
+      <span>Total bookings: {{ total_bookings }}</span>
+      <span> • </span>
+      <span>Total seats: {{ total_seats }}</span>
     </div>
   </div>
-    </main>
+  <div class="p-3">
+    <table id="bookings-table" class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th>Guest Name</th>
+          <th>Party Size</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Table ID</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="bookings-body">
+        {% include "partials/bookings_table_rows.html" %}
+      </tbody>
+    </table>
   </div>
+</section>
+
+<!-- Popup for table info -->
+<div id="table-popup" class="popup" style="display:none;"></div>
+
+  <!-- Server-provided bookings JSON for this page (MUST come before init script) -->
+  <script id="server-bookings-json" type="application/json">{{ bookings | tojson }}</script>
   
-  <!-- Popup for table info -->
-  <div id="table-popup" class="popup" style="display:none;"></div>
-
   <script>
   // Global state
   let currentBookings = [];
@@ -386,13 +140,15 @@
         const data = await res.json();
         currentTables = Array.isArray(data) ? data : [];
         const container = document.getElementById('tables');
-        container.innerHTML = '';
-        currentTables.forEach(t => {
-          const div = document.createElement('div');
-          div.className = 'table-box';
-          div.textContent = `Table ${t.id} (${t.seats} seats)`;
-          container.appendChild(div);
-        });
+        if (container) {
+          container.innerHTML = '';
+          currentTables.forEach(t => {
+            const div = document.createElement('div');
+            div.className = 'table-box';
+            div.textContent = `Table ${t.id} (${t.seats} seats)`;
+            container.appendChild(div);
+          });
+        }
         // After listing, draw the floorplan; if bookings already present, color with bookings
         if (currentBookings && currentBookings.length > 0) {
           drawTablesWithBookings(currentTables, currentBookings);
@@ -614,7 +370,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Optional light background
-      ctx.fillStyle = '#fafafa';
+      ctx.fillStyle = '#F7F4EE';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       tables.forEach(t => {
@@ -627,8 +383,8 @@
         const sw = w * drawScale;
         const sh = h * drawScale;
         // Neutral gray table
-        ctx.fillStyle = '#e0e0e0';
-        ctx.strokeStyle = '#666';
+        ctx.fillStyle = '#d1d5db';
+        ctx.strokeStyle = '#6b7280';
         // Table rectangle
         ctx.fillRect(sx, sy, sw, sh);
         ctx.lineWidth = 1;
@@ -642,7 +398,7 @@
   ctx.lineWidth = 3;
   ctx.strokeStyle = 'rgba(255,255,255,0.85)';
   ctx.strokeText(`T${t.id}`, sx + sw / 2, sy + sh / 2);
-  ctx.fillStyle = '#000';
+  ctx.fillStyle = '#0C1C2C';
   ctx.fillText(`T${t.id}`, sx + sw / 2, sy + sh / 2);
       });
     }
@@ -669,7 +425,7 @@
 
       // Clear and background
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#fafafa';
+      ctx.fillStyle = '#F7F4EE';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Draw each table with red/green
@@ -685,12 +441,12 @@
 
         if (bookedSet.has(t.id)) {
           // Booked: red
-          ctx.fillStyle = '#ffcdd2';
-          ctx.strokeStyle = '#c62828';
+          ctx.fillStyle = '#fecaca';
+          ctx.strokeStyle = '#dc2626';
         } else {
-          // Free: green
-          ctx.fillStyle = '#c8e6c9';
-          ctx.strokeStyle = '#2e7d32';
+          // Free: light blue
+          ctx.fillStyle = '#B9DFF5';
+          ctx.strokeStyle = '#0C1C2C';
         }
         ctx.fillRect(sx, sy, sw, sh);
         ctx.lineWidth = 1;
@@ -703,73 +459,136 @@
         ctx.lineWidth = 3;
         ctx.strokeStyle = 'rgba(255,255,255,0.85)';
         ctx.strokeText(`T${t.id}`, sx + sw / 2, sy + sh / 2);
-        ctx.fillStyle = '#000';
+        ctx.fillStyle = '#0C1C2C';
         ctx.fillText(`T${t.id}`, sx + sw / 2, sy + sh / 2);
       });
     }
 
+    function renderBookingsTable() {
+      // Render bookings into the table
+      const tbody = document.getElementById('bookings-body');
+      tbody.innerHTML = '';
+      
+      if (currentBookings.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="6" style="padding: 12px; text-align: center; color: var(--stl-gray);">No bookings found</td>';
+        tbody.appendChild(row);
+      } else {
+        currentBookings.forEach((b, idx) => {
+          const absoluteIndex = currentBookingsAll.indexOf(b); // Map filtered booking back to master list
+          const row = document.createElement('tr');
+          row.style.borderBottom = '1px solid var(--st-border)';
+          row.setAttribute('data-booking-index', absoluteIndex);
+          
+          // Title-case the name for display
+          const displayName = (b.name || 'N/A').split(' ').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          ).join(' ');
+          
+          // Build actions column with "Show notes" button first (if exists), then Edit button, then cancel icon
+          let actionsHTML = '';
+          
+          // Add "Show notes" button first if notes exist
+          if (b.notes && b.notes.trim()) {
+            const escapedNotes = (b.notes || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            actionsHTML += `
+              <button 
+                type="button" 
+                class="booking-notes-btn" 
+                data-notes="${escapedNotes}">
+                Notes
+              </button>
+            `;
+          }
+          
+          // Add Edit button
+          const escapedName = (b.name || '').replace(/"/g, '&quot;');
+          const escapedNotesForEdit = (b.notes || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+          actionsHTML += `
+            <button
+              type="button"
+              class="booking-edit-btn"
+              data-booking-index="${absoluteIndex}"
+              data-name="${escapedName}"
+              data-party-size="${b.party_size || 2}"
+              data-date="${b.date || ''}"
+              data-start-time="${b.start_time || ''}"
+              data-end-time="${b.end_time || ''}"
+              data-table-id="${b.table_id || ''}"
+              data-notes="${escapedNotesForEdit}">
+              Edit
+            </button>
+          `;
+          
+          // Add cancel icon last (always on the right)
+          actionsHTML += `
+            <button 
+              class="booking-icon-btn" 
+              onclick="deleteBooking(${absoluteIndex})"
+              title="Cancel booking"
+              aria-label="Cancel booking">
+              ✕
+            </button>
+          `;
+          
+          row.innerHTML = `
+            <td style="padding: 8px;">${displayName}</td>
+            <td style="padding: 8px;">${b.party_size || 'N/A'}</td>
+            <td style="padding: 8px;">${b.start_time || 'N/A'}</td>
+            <td style="padding: 8px;">${b.end_time || 'N/A'}</td>
+            <td style="padding: 8px;">${b.table_id !== null && b.table_id !== undefined ? b.table_id : 'N/A'}</td>
+            <td class="booking-actions-cell" style="padding: 8px;">
+              ${actionsHTML}
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+        
+        // Attach event listeners to "Show notes" buttons
+        document.querySelectorAll('.booking-notes-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const notes = this.getAttribute('data-notes') || '';
+            if (notes.trim()) {
+              alert(notes);
+            }
+          });
+        });
+      }
+
+      // Color the floorplan using bookings
+      drawTablesWithBookings(currentTables, currentBookings);
+    }
+
     async function loadBookings() {
-      const dateInput = document.getElementById('date-input').value;
+      const dateInput = document.getElementById('date-input');
       if (!dateInput) {
+        // If no date input exists (removed from sidebar), skip AJAX loading
+        return;
+      }
+      
+      const dateInputValue = dateInput.value;
+      if (!dateInputValue) {
         showStatus('Pick a date first', 'error');
         return;
       }
       
       try {
-        const res = await fetch(`/bookings?date=${dateInput}`);
+        const res = await fetch(`/bookings?date=${dateInputValue}`);
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
           showStatus('Error loading bookings: ' + (data.error || res.statusText), 'error');
           return;
         }
         const data = await res.json();
-  // Save all bookings for the selected date (unfiltered)
-  currentBookingsAll = Array.isArray(data) ? data : [];
+        // Save all bookings for the selected date (unfiltered)
+        currentBookingsAll = Array.isArray(data) ? data : [];
 
-  // Update summary (totals for the whole date)
-  updateBookingsSummary();
+        // Update summary (totals for the whole date)
+        updateBookingsSummary();
 
-        // Apply time filter if provided
-        const timeStr = document.getElementById('time-filter').value.trim();
-        const timeMinutes = parseTimeToMinutes(timeStr);
-        if (timeStr && timeMinutes == null) {
-          showStatus('Invalid time format. Use HH:MM, e.g. 19:00', 'error');
-          return;
-        }
+        currentBookings = currentBookingsAll;
 
-        currentBookings = currentBookingsAll.filter(b => isBookingActiveAt(timeMinutes, b));
-
-        // Render bookings into the table
-        const tbody = document.getElementById('bookings-body');
-        tbody.innerHTML = '';
-        
-        if (currentBookings.length === 0) {
-          const row = document.createElement('tr');
-          row.innerHTML = '<td colspan="6" style="padding: 12px; text-align: center; color: #999;">No bookings found</td>';
-          tbody.appendChild(row);
-        } else {
-          currentBookings.forEach((b, idx) => {
-            const absoluteIndex = currentBookingsAll.indexOf(b); // Map filtered booking back to master list
-            const row = document.createElement('tr');
-            row.style.borderBottom = '1px solid #eee';
-            row.setAttribute('data-booking-index', absoluteIndex);
-            row.innerHTML = `
-              <td style="padding: 8px;">${b.name || 'N/A'}</td>
-              <td style="padding: 8px;">${b.party_size || 'N/A'}</td>
-              <td style="padding: 8px;">${b.start_time || 'N/A'}</td>
-              <td style="padding: 8px;">${b.end_time || 'N/A'}</td>
-              <td style="padding: 8px;">${b.table_id !== null && b.table_id !== undefined ? b.table_id : 'N/A'}</td>
-              <td style="padding: 8px; white-space: nowrap;">
-                <button class="btn-small" onclick="editBooking(${absoluteIndex})">Edit</button>
-                <button class="btn-small btn-danger" onclick="deleteBooking(${absoluteIndex})">Delete</button>
-              </td>
-            `;
-            tbody.appendChild(row);
-          });
-        }
-
-        // Color the floorplan using bookings
-        drawTablesWithBookings(currentTables, currentBookings);
+        renderBookingsTable();
       } catch (err) {
         console.error('Load bookings error:', err);
         showStatus('Failed to load bookings: ' + err.message, 'error');
@@ -788,6 +607,10 @@
       }
     }
 
+    // REMOVED: Old createBooking() function that referenced deleted inline form fields
+    // (#name, #party, #start, #end, #create-booking-btn, #booking-loading)
+    // Now using modal form with handler in main.js instead
+    /*
     async function createBooking() {
       const dateInput = document.getElementById('date-input').value;
       const name = document.getElementById('name').value;
@@ -842,7 +665,10 @@
         loadingMsg.style.display = 'none';
       }
     }
+    */
 
+    // REMOVED: Old updateBooking() function that referenced deleted inline form fields
+    /*
     // Submit update via PUT /bookings
     async function updateBooking() {
       if (editingIndex == null || editingIndex < 0 || editingIndex >= currentBookingsAll.length) {
@@ -902,7 +728,10 @@
         loadingMsg.style.display = 'none';
       }
     }
+    */
 
+    // REMOVED: Old editBooking() function that referenced deleted inline form fields
+    /*
     // Begin editing: populate form and switch button to Update mode
     function editBooking(index) {
       if (index == null || index < 0 || index >= currentBookingsAll.length) {
@@ -920,6 +749,7 @@
       btn.onclick = updateBooking;
       showStatus('Loaded booking into form. Edit and press "Update booking".', 'info');
     }
+    */
 
     // Delete booking via backend, then refresh UI
     async function deleteBooking(index) {
@@ -952,21 +782,27 @@
 
     // Initialize on page load
     (function init() {
-      // Set date input to today
-      const dateInput = document.getElementById('date-input');
-      const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, '0');
-      const dd = String(today.getDate()).padStart(2, '0');
-      dateInput.value = `${yyyy}-${mm}-${dd}`;
+      // Load server-side bookings data (avoid inline JS object to prevent parser errors)
+      let serverBookings = [];
+      const serverBookingsEl = document.getElementById('server-bookings-json');
+      if (serverBookingsEl) {
+        try {
+          serverBookings = JSON.parse(serverBookingsEl.textContent);
+        } catch (e) {
+          serverBookings = [];
+        }
+      }
+      currentBookingsAll = serverBookings || [];
+      currentBookings = currentBookingsAll;
+      
+      // Render bookings into the table
+      renderBookingsTable();
       
       // Load tables immediately
       loadTables();
-      
-      // Load bookings for today
-      loadBookings();
     })();
   </script>
+  
   <script>
     // Attach canvas click handler after DOM loads
     (function attachCanvasHandler(){
@@ -975,4 +811,10 @@
       canvas.addEventListener('click', onCanvasClick);
     })();
   </script>
+
+  <!-- Include edit booking modal -->
+  {% include "partials/booking_edit_modal.html" %}
+  
+  <!-- Include edit booking JS -->
+  <script src="{{ url_for('static', filename='js/booking_edit.js') }}"></script>
 {% endblock %}

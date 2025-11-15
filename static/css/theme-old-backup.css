@@ -1,0 +1,1005 @@
+[data-floorplan-mode] .landmark { position: absolute; background: rgba(200,210,255,0.5); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; user-select: none; color: #1a2540; padding: 4px 10px; box-sizing: border-box; }
+[data-floorplan-mode] .landmark-label { pointer-events: none; }
+.edit-mode .landmark, [data-floorplan-mode="edit"] .landmark { border: 2px dashed #667788; }
+.landmark .resize-handle { width: 10px; height: 10px; background: #667788; position: absolute; right: -5px; bottom: -5px; cursor: se-resize; border-radius: 2px; }
+.edit-mode .landmark.is-dragging, [data-floorplan-mode="edit"] .landmark.is-dragging { box-shadow: 0 0 0 3px rgba(102,119,136,0.35); }
+/* Seatelligence custom theme
+   Orca-inspired, matte, rounded, techy-but-soft
+*/
+
+:root {
+  /* Brand palette - Seatelligence */
+  --stl-navy: #0b1f33;        /* main orca blue */
+  --stl-navy-soft: #132840;   /* slightly lighter for hovers */
+  --stl-cream: #f8f4ec;       /* background */
+  --stl-yellow: #facc15;      /* lightning yellow accent */
+  --stl-blue: #3b82f6;        /* lighter blue accent */
+  --stl-muted: #6b7280;       /* gray text */
+  --stl-border: #e5e7eb;      /* soft border */
+
+  /* Semantic color mapping */
+  --st-bg: var(--stl-navy);
+  --st-surface: #ffffff;
+  --st-surface-soft: var(--stl-cream);
+  --st-primary: var(--stl-navy);
+  --st-primary-soft: #dbeafe;
+  --st-accent: #22c55e;
+  --st-text: #0b1120;
+  --st-text-muted: var(--stl-muted);
+
+  /* Bootstrap overrides */
+  --bs-body-bg: var(--st-surface-soft);
+  --bs-body-color: var(--st-text);
+  --bs-primary: var(--st-primary);
+  --bs-primary-rgb: 11, 31, 51;
+  --bs-secondary: var(--stl-blue);
+  --bs-success: var(--st-accent);
+  --bs-warning: var(--stl-yellow);
+  --bs-info: var(--stl-blue);
+  --bs-border-radius: 0.75rem;
+  --bs-border-radius-sm: 0.5rem;
+  --bs-border-radius-lg: 1rem;
+}
+
+/* Global */
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--st-surface-soft);
+  color: var(--st-text);
+}
+
+/* Navbar */
+
+.stl-navbar {
+  background: var(--stl-navy);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.stl-navbar .navbar-brand {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.stl-navbar .navbar-brand img {
+  height: 32px;
+}
+
+/* Sidebar */
+
+.stl-sidebar {
+  min-height: calc(100vh - 70px);
+  background: #f9fafb;
+  border-right: 1px solid var(--stl-border);
+  padding-top: 1rem;
+}
+
+.stl-sidebar h6 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--stl-muted);
+}
+
+.stl-sidebar .nav-link {
+  border-radius: 999px;
+  color: #4b5563;
+  font-size: 0.9rem;
+  padding: 0.45rem 0.9rem;
+  margin-bottom: 0.2rem;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.stl-sidebar .nav-link:hover {
+  background-color: #e5f0ff;
+  color: var(--stl-navy);
+  transform: translateX(1px);
+}
+
+.stl-sidebar .nav-link.active {
+  background: var(--stl-navy);
+  color: #f9fafb;
+}
+
+/* Cards */
+
+.card,
+.panel,
+.well {
+  background: var(--st-surface);
+  border-radius: 1rem;
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+/* Buttons */
+
+.btn {
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.btn-primary,
+.btn-success {
+  background: var(--st-primary);
+  border-color: var(--st-primary);
+  color: white;
+}
+
+.btn-primary:hover,
+.btn-success:hover {
+  background: #1e40af;
+  border-color: #1e40af;
+  color: white;
+}
+
+.btn-default,
+.st-button-outline {
+  background: transparent;
+  border: 1px solid var(--st-primary);
+  color: var(--st-primary);
+}
+
+.btn-default:hover,
+.st-button-outline:hover {
+  background: var(--st-primary-soft);
+  border-color: var(--st-primary);
+  color: var(--st-primary);
+}
+
+.btn-outline-secondary {
+  border-color: var(--stl-border);
+  color: #374151;
+}
+
+.btn-outline-secondary:hover {
+  background: #e5f0ff;
+  color: var(--stl-navy);
+  border-color: #d1e3ff;
+}
+
+/* Alerts & Badges */
+
+.alert-info,
+.badge-info {
+  background-color: var(--st-primary-soft);
+  color: var(--st-primary);
+  border: 1px solid var(--st-primary);
+}
+
+/* Pills for filters / legend */
+
+.stl-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  border: 1px solid var(--stl-border);
+  background-color: #ffffff;
+  color: #374151;
+}
+
+/* Tables */
+
+.table {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.table thead {
+  background: #f3f4f6;
+}
+
+.table thead th {
+  border-bottom: 1px solid var(--stl-border);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--stl-muted);
+}
+
+.table tbody tr {
+  border-bottom: 1px solid rgba(229, 231, 235, 0.7);
+}
+
+.table-hover tbody tr:hover {
+  background-color: #eef2ff;
+}
+
+/* Form Controls */
+
+.form-control,
+.st-input {
+  background-color: #ffffff;
+  border: 1px solid var(--stl-border);
+  border-radius: 0.75rem;
+  color: var(--st-text);
+  padding: 0.6rem 1rem;
+}
+
+.form-control:focus,
+.st-input:focus {
+  border-color: var(--st-primary);
+  box-shadow: 0 0 0 3px var(--st-primary-soft);
+  background-color: #ffffff;
+  outline: none;
+}
+
+.form-label,
+.st-label {
+  color: var(--st-text);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* Page title */
+
+.stl-page-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--stl-navy);
+}
+
+/* Small status dot */
+
+.stl-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-right: 0.35rem;
+}
+
+.stl-status-available {
+  background-color: #22c55e;
+}
+
+.stl-status-booked {
+  background-color: #f97316;
+}
+
+/* Floorplan canvas container (soft edges) */
+
+.stl-floorplan-frame {
+  border-radius: 1.2rem;
+  background: #ffffff;
+  border: 1px solid var(--stl-border);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.04);
+  padding: 1rem;
+}
+
+/* Inputs */
+
+.form-control,
+.form-select {
+  border-radius: 999px;
+  border-color: var(--stl-border);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--stl-blue);
+  box-shadow: 0 0 0 0.16rem rgba(59, 130, 246, 0.25);
+}
+
+/* Alerts */
+
+.alert {
+  border-radius: 0.9rem;
+}
+
+/* Subtle scrollbars (desktop only) */
+
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(15, 23, 42, 0.15);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(15, 23, 42, 0.3);
+  }
+}
+
+/* --- Calendar / Timeline styles --- */
+.stl-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.05);
+  margin-bottom: 1rem;
+}
+.stl-card-large { padding: 0.6rem; }
+.stl-card-header { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--stl-border); }
+.stl-card-title { font-size: 1.1rem; font-weight: 600; color: var(--stl-navy); }
+.stl-card-meta { font-size: 0.9rem; color: var(--stl-muted); }
+
+.stl-timeline {
+  position: relative;
+  margin: 12px 0;
+  padding-left: 140px; /* space for time column */
+}
+.stl-timeline:before {
+  content: "";
+  position: absolute;
+  left: 120px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--stl-border);
+}
+.stl-timeline-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin: 16px 0;
+}
+.stl-timeline-time {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 110px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #0d1b2a;
+}
+.stl-timeline-dot {
+  position: absolute;
+  left: 114px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  background: #0d6efd;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px #0d6efd44;
+  border-radius: 50%;
+}
+.stl-timeline-content {
+  margin-left: 24px;
+  background: #fff;
+  border: 1px solid var(--stl-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  flex: 1;
+}
+.stl-timeline-header { display: flex; justify-content: space-between; align-items: center; }
+.stl-timeline-title { font-weight: 600; }
+.stl-timeline-meta { color: var(--stl-muted); font-size: 0.9rem; }
+.stl-timeline-notes { margin-top: 6px; font-size: 0.95rem; }
+.stl-timeline-actions { margin-top: 8px; }
+
+/* Badges and links */
+.stl-badge { padding: 2px 8px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
+.stl-badge-pending { background: #fff3cd; color: #856404; }
+.stl-badge-confirmed { background: #d1e7dd; color: #0f5132; }
+.stl-badge-cancelled { background: #f8d7da; color: #842029; }
+.stl-link-sm { font-size: 0.9rem; color: #0d6efd; text-decoration: none; }
+.stl-link-sm:hover { text-decoration: underline; }
+.stl-link-danger { color: #dc3545; }
+
+/* Empty state */
+.stl-empty-state {
+  color: var(--stl-muted);
+}
+.stl-empty-state-padded {
+  padding: 1.25rem;
+  border: 1px dashed var(--stl-border);
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+/* --- Modal styles (Seatelligence) --- */
+.st-modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 2000; }
+.st-modal.is-open { display: flex; }
+.st-modal-open { display: flex; }
+.st-modal-hidden { display: none; }
+.st-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1999; }
+.st-modal-dialog { position: relative; background: #ffffff; border-radius: 1rem; padding: 1.25rem 1.5rem; max-width: 520px; width: 100%; box-shadow: 0 24px 60px rgba(0,0,0,0.25); border: 1px solid var(--stl-border); }
+.st-modal-header, .st-modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.st-modal-title { font-size: 1.25rem; font-weight: 600; color: var(--stl-navy); margin: 0; }
+.st-modal-body { margin-top: 0.75rem; margin-bottom: 1rem; position: relative; z-index: 1; }
+.st-modal-close { background: transparent; border: none; font-size: 1.25rem; cursor: pointer; color: #374151; }
+body.st-modal-open { overflow: hidden; }
+.st-form-vertical .st-form-row { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.75rem; }
+.st-form-vertical .st-form-row.st-form-row-2 { 
+  flex-direction: row; 
+  gap: 0.75rem; 
+}
+.st-form-vertical .st-form-row.st-form-row-2 label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+@media (max-width: 640px) {
+  .st-form-vertical .st-form-row.st-form-row-2 {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+.st-input { border: 1px solid var(--stl-border); border-radius: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.95rem; }
+.st-input:focus { outline: none; border-color: var(--stl-blue); box-shadow: 0 0 0 0.16rem rgba(59, 130, 246, 0.25); }
+.st-button { border-radius: 999px; border: 1px solid transparent; padding: 0.45rem 0.9rem; font-weight: 600; cursor: pointer; }
+.st-button-primary { background: var(--stl-navy); color: #fff; border-color: var(--stl-navy); }
+.st-button-primary:hover { background: var(--stl-navy-soft); border-color: var(--stl-navy-soft); }
+.st-button-ghost { background: transparent; border-color: var(--stl-border); color: #374151; }
+.st-button-ghost:hover { background: #eef2ff; color: var(--stl-navy); border-color: #d1e3ff; }
+.st-sidebar-button { width: 100%; border-radius: 999px; padding: 0.5rem 0.9rem; border: 1px solid var(--stl-border); background: #fff; color: var(--stl-navy); font-weight: 600; }
+.st-sidebar-button:hover { background: #e5f0ff; }
+
+/* Booking actions column */
+.booking-actions-cell {
+  white-space: nowrap;
+  text-align: right;
+  padding-right: 1rem;
+}
+
+.inline-form {
+  display: inline;
+}
+
+.booking-icon-btn {
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.1rem 0.3rem;
+  line-height: 1;
+  border-radius: 999px;
+  transition: background 0.15s ease, color 0.15s ease;
+  color: #6b7280;
+}
+
+.booking-icon-btn:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+.booking-notes-btn {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: #f8f4ec;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  color: var(--stl-navy);
+  font-weight: 500;
+}
+
+.booking-notes-btn:hover {
+  background: #e4dfd3;
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+/* Date navigation controls */
+.bookings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.bookings-header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.booking-date-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.booking-date-nav-btn {
+  border: none;
+  background: var(--stl-navy);
+  color: #f9fafb;
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-weight: 500;
+}
+
+.booking-date-nav-btn:hover {
+  background: var(--stl-navy-soft);
+  color: #ffffff;
+}
+
+.booking-date-label {
+  font-weight: 600;
+  color: var(--stl-navy);
+  padding: 0 0.25rem;
+}
+
+.booking-date-picker-form {
+  margin-left: 0.5rem;
+}
+
+.booking-date-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.booking-date-picker-icon {
+  position: absolute;
+  left: 0.5rem;
+  pointer-events: none;
+  font-size: 0.9rem;
+}
+
+.booking-date-picker-input {
+  padding: 0.25rem 0.6rem 0.25rem 1.8rem;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--stl-border);
+  background: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.booking-date-picker-input:hover {
+  border-color: var(--stl-blue);
+}
+ 
+.bookings-header-meta {
+  font-size: 0.9rem;
+  color: var(--stl-muted);
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .bookings-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .bookings-header-meta {
+    width: 100%;
+  }
+}
+
+/* Calendar grid styles */
+.calendar-card {
+  overflow: hidden;
+}
+
+.calendar-body {
+  padding: 0;
+  overflow-x: auto;
+}
+
+.calendar-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.calendar-grid {
+  border-collapse: collapse;
+  min-width: 100%;
+  font-size: 0.85rem;
+  width: max-content;
+}
+
+.calendar-grid th,
+.calendar-grid td {
+  border: 1px solid var(--stl-border);
+  padding: 0.4rem 0.5rem;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.calendar-table-col {
+  position: sticky;
+  left: 0;
+  background: var(--stl-cream);
+  z-index: 10;
+  font-weight: 600;
+  color: var(--stl-navy);
+  min-width: 100px;
+  text-align: left;
+}
+
+.calendar-table-cell {
+  position: sticky;
+  left: 0;
+  background: var(--stl-cream);
+  z-index: 9;
+  font-weight: 500;
+  color: var(--stl-navy);
+  min-width: 100px;
+  text-align: left;
+}
+
+.calendar-time-col {
+  text-align: center;
+  font-weight: 500;
+  background: #f3f4f6;
+  color: var(--stl-navy);
+  min-width: 60px;
+  font-size: 0.8rem;
+}
+
+.calendar-empty-cell {
+  background: #ffffff;
+  min-width: 60px;
+  height: 45px;
+}
+
+.calendar-booking-cell {
+  padding: 0.25rem;
+  background: #ffffff;
+}
+
+.calendar-booking-pill {
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  background: #a7f3d0;
+  border: 1px solid #34d399;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #065f46;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+
+.calendar-booking-pill:hover {
+  background: #6ee7b7;
+  border-color: #10b981;
+  cursor: pointer;
+}
+
+/* Drag & drop states */
+.calendar-dragging {
+  opacity: 0.5;
+  cursor: grabbing !important;
+}
+
+.calendar-drop-target {
+  outline: 2px dashed #3b82f6;
+  outline-offset: -2px;
+  background-color: #eff6ff !important;
+}
+
+.calendar-booking-pill[draggable="true"] {
+  cursor: grab;
+}
+
+/* Time slot picker */
+.st-time-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.st-time-help {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  color: var(--st-text-muted);
+}
+
+.st-time-slot {
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--stl-border);
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #ffffff;
+  color: var(--stl-navy);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s, box-shadow 0.15s ease;
+  font-weight: 500;
+}
+
+.st-time-slot:hover:not(.is-disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(11, 31, 51, 0.1);
+  border-color: var(--stl-blue);
+}
+
+.st-time-slot.is-selected {
+  background: var(--stl-blue);
+  border-color: var(--stl-blue);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.st-time-slot.is-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+
+/* Booking edit buttons */
+.booking-edit-btn {
+  padding: 0.3rem 0.6rem;
+  margin: 0 0.25rem;
+  font-size: 0.8rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-weight: 500;
+}
+
+.booking-edit-btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+}
+
+.booking-edit-btn:active {
+  transform: translateY(0);
+}
+
+/* Calendar edit button (pen icon) */
+.calendar-booking-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.3rem;
+  padding-right: 0.2rem;
+}
+
+.calendar-booking-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-edit-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.15rem 0.3rem;
+  line-height: 1;
+  color: #065f46;
+  opacity: 0.7;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.calendar-edit-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.calendar-edit-btn:active {
+  transform: scale(1);
+}
+
+/* Prevent edit button from triggering drag */
+.calendar-edit-btn {
+  pointer-events: auto;
+}
+
+/* DEBUG: force success buttons to red so we can see if theme.css is applied */
+.btn-success {
+  background-color: red !important;
+  border-color: red !important;
+}
+
+/* ============================================================
+   FLOORPLAN - Mode Toggle & Table States
+   ============================================================ */
+
+/* Mode toggle container */
+.floorplan-mode-toggle {
+  display: inline-flex;
+  gap: 0;
+  border: 2px solid var(--stl-navy);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* Toggle buttons */
+.st-toggle-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--stl-navy);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-right: 1px solid var(--stl-navy);
+}
+
+.st-toggle-btn:last-child {
+  border-right: none;
+}
+
+.st-toggle-btn:hover {
+  background: rgba(11, 31, 51, 0.1);
+}
+
+.st-toggle-btn.is-active {
+  background: var(--stl-navy);
+  color: white;
+}
+
+/* Floorplan table state colors (Service view) */
+.fp-table--state-empty {
+  fill: #3b82f6 !important; /* blue */
+  stroke: #2563eb;
+  stroke-width: 2;
+}
+
+.fp-table--state-upcoming {
+  fill: #facc15 !important; /* yellow */
+  stroke: #eab308;
+  stroke-width: 2;
+}
+
+.fp-table--state-occupied {
+  fill: #ef4444 !important; /* red */
+  stroke: #dc2626;
+  stroke-width: 2;
+}
+
+/* Edit mode - default gray */
+.fp-table--edit-mode {
+  fill: #d1d5db;
+  stroke: #9ca3af;
+  stroke-width: 1;
+}
+
+/* Tooltip styling enhancement */
+#floorplanCanvas {
+  cursor: default;
+}
+
+#floorplanCanvas.edit-mode {
+  cursor: grab;
+}
+
+#floorplanCanvas.edit-mode:active {
+  cursor: grabbing;
+}
+
+/* Floorplan layout with side panel */
+.floorplan-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(280px, 1fr);
+  gap: 1.5rem;
+}
+
+.floorplan-card {
+  overflow: hidden;
+}
+
+.st-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.st-card-body {
+  padding: 1.5rem;
+}
+
+.st-card-main {
+  flex: 1;
+}
+
+/* Table details side panel */
+.floorplan-details {
+  background: #f9fafb;
+  border-radius: 1.25rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.04);
+  align-self: flex-start;
+  position: sticky;
+  top: 1rem;
+}
+
+.floorplan-details-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--st-text);
+}
+
+.floorplan-details .st-form-group {
+  margin-bottom: 0.75rem;
+}
+
+.floorplan-details .st-form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: var(--st-text);
+}
+
+.st-input,
+.st-select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--stl-border);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.fp-detail-combos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  margin-top: 0.35rem;
+}
+
+.fp-detail-combos-badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: #f3f4f6;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.floorplan-details-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* In service view, side panel is visually muted */
+[data-floorplan-mode="service"] .floorplan-details {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Selected table highlight in edit mode */
+.fp-table--selected {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.6) !important;
+  filter: brightness(1.1);
+}
+
+/* ===== Landmarks Overlay ===== */
+.floorplan-overlay { position: absolute; inset: 0; pointer-events: none; }
+.floorplan-overlay .landmark { pointer-events: auto; }
+.floorplan-overlay .fp-landmark { pointer-events: auto; }
+.fp-landmark { position: absolute; border-radius: 0.75rem; border: 1px dashed rgba(55,65,81,0.4); background: rgba(249,250,251,0.85); display: flex; align-items: center; justify-content: center; padding: 0.4rem 0.6rem; box-sizing: border-box; font-size: 0.75rem; font-weight: 500; color: #1f2937; backdrop-filter: blur(2px); user-select: none; transition: box-shadow .15s ease, transform .15s ease; }
+.fp-landmark-label { display: inline-flex; align-items: center; gap: 0.3rem; line-height: 1; }
+.fp-landmark--entrance { border-color: #10b981; background: rgba(209,250,229,0.85); }
+.fp-landmark--bar { border-color: #3b82f6; background: rgba(219,234,254,0.85); }
+.fp-landmark--bathroom { border-color: #a855f7; background: rgba(237,233,254,0.85); }
+[data-floorplan-mode="edit"] .fp-landmark { cursor: grab; }
+[data-floorplan-mode="edit"] .fp-landmark.is-dragging { cursor: grabbing; box-shadow: 0 0 0 3px rgba(59,130,246,0.35); }
+[data-floorplan-mode="service"] .fp-landmark { cursor: default; }
+.floorplan-canvas-wrapper { position: relative; }
+.floorplan-canvas-wrapper canvas { position: relative; z-index: 1; }
+.floorplan-overlay { z-index: 5; }
+
+

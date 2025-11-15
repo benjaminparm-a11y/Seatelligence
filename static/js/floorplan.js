@@ -1,141 +1,266 @@
-(function(){
-  window.Seatelligence = window.Seatelligence || {};
+// static/js/floorplan.js
 
-  function withDPR(canvas, ctx){
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-    canvas.height = Math.max(1, Math.floor(rect.height * dpr));
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    return { width: rect.width, height: rect.height, dpr };
+(function () {
+  const GRID = 10;
+
+  function qs(sel, root = document) {
+    return root.querySelector(sel);
+  }
+  function qsa(sel, root = document) {
+    return Array.from(root.querySelectorAll(sel));
   }
 
-  function normalizeTables(tables, width, height){
-    if (!Array.isArray(tables) || tables.length === 0){
-      // generate a simple demo grid if no tables provided
-      const cols = 5, rows = 3;
-      const gw = width / (cols + 1);
-      const gh = height / (rows + 1);
-      const out = [];
-      let n = 1;
-      for (let r = 1; r <= rows; r++){
-        for (let c = 1; c <= cols; c++){
-          out.push({ x: c * gw, y: r * gh, w: 64, h: 64, number: n++, capacity: 4, shape: 'round' });
-        }
+  function initFloorplan() {
+    const canvas = qs('#fpCanvas');
+    const overlay = qs('#fpOverlay');
+    const serviceBtn = qs('#floorplanModeService');
+    const editBtn = qs('#floorplanModeEdit');
+
+    if (!canvas || !overlay) return;
+
+    // Mode handling
+    let mode = 'service';
+    function setMode(newMode) {
+      mode = newMode;
+      canvas.classList.toggle('edit-mode', newMode === 'edit');
+      canvas.classList.toggle('service-mode', newMode === 'service');
+      if (serviceBtn && editBtn) {
+        serviceBtn.classList.toggle('is-active', newMode === 'service');
+        editBtn.classList.toggle('is-active', newMode === 'edit');
       }
-      return out;
     }
-    return tables.map(t => ({
-      x: t.x ?? Math.random() * width * 0.8 + width * 0.1,
-      y: t.y ?? Math.random() * height * 0.8 + height * 0.1,
-      w: t.w ?? t.width ?? 64,
-      h: t.h ?? t.height ?? 64,
-      number: t.number ?? t.name ?? t.id ?? '?',
-      capacity: t.capacity ?? t.seats ?? 4,
-      shape: t.shape ?? ((t.w || t.width) && (t.h || t.height) && (t.w !== t.h) ? 'rect' : 'round')
-    }));
-  }
+    serviceBtn && serviceBtn.addEventListener('click', () => setMode('service'));
+    editBtn && editBtn.addEventListener('click', () => setMode('edit'));
+    setMode('service');
 
-  function drawBackground(ctx, w, h){
-    ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = '#f6f8fa';
-    ctx.fillRect(0, 0, w, h);
-    ctx.strokeStyle = '#e5eaef';
-    ctx.lineWidth = 1;
-    for (let x = 0; x <= w; x += 40){
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
-    }
-    for (let y = 0; y <= h; y += 40){
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-    }
-  }
+    // Drag/resize state
+    let activeTable = null;
+    let dragging = false;
+    let resizing = false;
+    let layoutDirty = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let dragStartLeft = 0;
+    let dragStartTop = 0;
+    let resizeStartX = 0;
+    let resizeStartY = 0;
+    let resizeStartW = 0;
+    let resizeStartH = 0;
 
-  function drawTable(ctx, t){
-    ctx.save();
-    ctx.fillStyle = '#0d6efd22';
-    ctx.strokeStyle = '#0d6efd';
-    ctx.lineWidth = 2;
-    if (t.shape === 'rect'){
-      const x = t.x - t.w/2, y = t.y - t.h/2;
-      if (typeof ctx.roundRect === 'function'){
-        ctx.beginPath();
-        ctx.roundRect(x, y, t.w, t.h, 8);
-        ctx.fill(); ctx.stroke();
-      } else {
-        ctx.beginPath(); ctx.rect(x, y, t.w, t.h); ctx.fill(); ctx.stroke();
+    // Details panel
+    const detailsForm = qs('#fpDetailsForm');
+    const detailsEmpty = qs('#fpDetailsEmpty');
+    const idInput = qs('#fp-detail-id');
+    const nameInput = qs('#fp-detail-name');
+    const capInput = qs('#fp-detail-capacity');
+    const sectionInput = qs('#fp-detail-section');
+    const shapeRound = qs('#fp-detail-shape-round');
+    const shapeSquare = qs('#fp-detail-shape-square');
+    const applyBtn = qs('#fp-detail-apply');
+    const cancelBtn = qs('#fp-detail-cancel');
+
+    let selectedTable = null;
+
+    function showDetails(el) {
+      selectedTable = el;
+      if (!detailsForm || !idInput) return;
+      const isLandmark = el.dataset.isLandmark === 'true';
+
+      idInput.value = el.dataset.id || '';
+      if (nameInput) nameInput.value = el.dataset.name || '';
+      if (capInput) {
+        capInput.value = el.dataset.capacity || '0';
+        capInput.disabled = isLandmark; // landmarks stay capacity 0
       }
-    } else {
-      const r = Math.min(t.w, t.h) / 2;
-      ctx.beginPath(); ctx.arc(t.x, t.y, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-    }
-    // label
-    ctx.fillStyle = '#0d1b2a';
-    ctx.font = '12px -apple-system, Segoe UI, Roboto, system-ui, sans-serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(String(t.number), t.x, t.y);
-    ctx.restore();
-  }
+      if (sectionInput) sectionInput.value = el.dataset.section || 'Main';
 
-  function redraw(canvas, ctx, items){
-    const { width, height } = canvas.getBoundingClientRect();
-    drawBackground(ctx, width, height);
-    items.forEach(t => drawTable(ctx, t));
-  }
-
-  window.Seatelligence.initFloorplan = function(canvas, opts){
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const metrics = withDPR(canvas, ctx);
-    let items = normalizeTables((opts && opts.tables) || [], metrics.width, metrics.height);
-
-    redraw(canvas, ctx, items);
-
-    // handle resize
-    let resizeTimeout = null;
-    function onResize(){
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        const m = withDPR(canvas, ctx);
-        items = normalizeTables(items, m.width, m.height);
-        redraw(canvas, ctx, items);
-      }, 100);
-    }
-    window.addEventListener('resize', onResize);
-
-    // expose simple controls
-  const resetBtn = document.getElementById('resetLayoutBtn');
-  const autoBtn = document.getElementById('autoAssignBtn');
-  const saveBtn = document.getElementById('saveLayoutBtn');
-    resetBtn && resetBtn.addEventListener('click', () => {
-      const m = withDPR(canvas, ctx);
-      items = normalizeTables([], m.width, m.height);
-      redraw(canvas, ctx, items);
-    });
-    autoBtn && autoBtn.addEventListener('click', () => {
-      // placeholder for auto-assign action
-      // For now, just flash a quick outline
-      const { width, height } = canvas.getBoundingClientRect();
-      ctx.save();
-      ctx.strokeStyle = '#198754';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(2, 2, width - 4, height - 4);
-      setTimeout(() => { redraw(canvas, ctx, items); ctx.restore(); }, 250);
-    });
-    saveBtn && saveBtn.addEventListener('click', () => {
-      // Placeholder save action; wire to backend later
-      const { width, height } = canvas.getBoundingClientRect();
-      ctx.save();
-      ctx.strokeStyle = '#0d6efd';
-      ctx.setLineDash([8, 6]);
-      ctx.lineWidth = 3;
-      ctx.strokeRect(6, 6, width - 12, height - 12);
-      setTimeout(() => { redraw(canvas, ctx, items); ctx.restore(); }, 300);
-    });
-
-    return {
-      destroy(){
-        window.removeEventListener('resize', onResize);
+      const shape = el.dataset.shape || 'square';
+      if (shapeRound && shapeSquare) {
+        shapeRound.checked = shape === 'round';
+        shapeSquare.checked = shape !== 'round';
       }
-    };
-  };
+
+      detailsEmpty && (detailsEmpty.hidden = true);
+      detailsForm && (detailsForm.hidden = false);
+    }
+
+    function clearDetails() {
+      selectedTable = null;
+      detailsForm && (detailsForm.hidden = true);
+      detailsEmpty && (detailsEmpty.hidden = false);
+    }
+
+    // Attach handlers to each table
+    qsa('.fp-table', overlay).forEach((el) => {
+      // click → select (edit only)
+      el.addEventListener('click', (e) => {
+        if (mode !== 'edit') return;
+        if (e.target.classList.contains('fp-table-resize')) return;
+        e.stopPropagation();
+        showDetails(el);
+      });
+
+      // drag
+      el.addEventListener('mousedown', (e) => {
+        if (mode !== 'edit') return;
+        if (e.target.classList.contains('fp-table-resize')) return;
+
+        activeTable = el;
+        dragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        dragStartLeft = parseFloat(el.style.left) || 0;
+        dragStartTop = parseFloat(el.style.top) || 0;
+        e.preventDefault();
+      });
+
+      // resize
+      const h = el.querySelector('.fp-table-resize');
+      if (h) {
+        h.addEventListener('mousedown', (e) => {
+          if (mode !== 'edit') return;
+          activeTable = el;
+          resizing = true;
+          resizeStartX = e.clientX;
+          resizeStartY = e.clientY;
+          resizeStartW = el.offsetWidth;
+          resizeStartH = el.offsetHeight;
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (mode !== 'edit' || !activeTable) return;
+
+      if (dragging) {
+        const dx = e.clientX - dragStartX;
+        const dy = e.clientY - dragStartY;
+        let left = dragStartLeft + dx;
+        let top = dragStartTop + dy;
+
+        const maxLeft = canvas.clientWidth - activeTable.offsetWidth;
+        const maxTop = canvas.clientHeight - activeTable.offsetHeight;
+
+        left = Math.max(0, Math.min(maxLeft, left));
+        top = Math.max(0, Math.min(maxTop, top));
+
+        left = Math.round(left / GRID) * GRID;
+        top = Math.round(top / GRID) * GRID;
+
+        activeTable.style.left = left + 'px';
+        activeTable.style.top = top + 'px';
+        layoutDirty = true;
+      } else if (resizing) {
+        const dx = e.clientX - resizeStartX;
+        const dy = e.clientY - resizeStartY;
+        let w = resizeStartW + dx;
+        let h = resizeStartH + dy;
+
+        w = Math.max(30, Math.round(w / GRID) * GRID);
+        h = Math.max(30, Math.round(h / GRID) * GRID);
+
+        activeTable.style.width = w + 'px';
+        activeTable.style.height = h + 'px';
+        activeTable.dataset.width = String(w);
+        activeTable.dataset.height = String(h);
+        layoutDirty = true;
+      }
+    });
+
+    // Save layout function
+    function collectTablesPayload() {
+      const result = [];
+      qsa('.fp-table', overlay).forEach((el) => {
+        result.push({
+          id: parseInt(el.dataset.id, 10),
+          name: el.dataset.name || '',
+          capacity: parseInt(el.dataset.capacity || '0', 10),
+          section: el.dataset.section || 'Main',
+          shape: el.dataset.shape || 'square',
+          bookable: el.dataset.bookable !== 'false',
+          is_landmark: el.dataset.isLandmark === 'true',
+          x: parseFloat(el.style.left) || 0,
+          y: parseFloat(el.style.top) || 0,
+          width: parseFloat(el.dataset.width || el.offsetWidth),
+          height: parseFloat(el.dataset.height || el.offsetHeight)
+        });
+      });
+      return result;
+    }
+
+    function saveLayout() {
+      const tables = collectTablesPayload();
+      if (!tables || tables.length === 0) return;
+
+      fetch('/api/save_table_layout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tables })
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (!data || !data.success) {
+            console.error('Failed to save layout', data);
+          }
+        })
+        .catch((err) => {
+          console.error('Error saving layout', err);
+        });
+    }
+
+    document.addEventListener('mouseup', () => {
+      const wasDraggingOrResizing = dragging || resizing;
+      dragging = false;
+      resizing = false;
+      activeTable = null;
+
+      // Auto-save only if something changed and we're in edit mode
+      if (wasDraggingOrResizing && layoutDirty && mode === 'edit') {
+        layoutDirty = false;
+        saveLayout();
+      }
+    });
+
+    // Empty space click → clear selection
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        clearDetails();
+      }
+    });
+
+    // Apply details to selected table
+    applyBtn && applyBtn.addEventListener('click', () => {
+      if (!selectedTable) return;
+      const isLandmark = selectedTable.dataset.isLandmark === 'true';
+
+      const name = nameInput ? nameInput.value : selectedTable.dataset.name;
+      let capacity = capInput ? parseInt(capInput.value || '0', 10) : 0;
+      if (isLandmark) capacity = 0;
+
+      const section = sectionInput ? sectionInput.value : 'Main';
+      let shape = 'square';
+      if (shapeRound && shapeRound.checked) shape = 'round';
+      if (shapeSquare && shapeSquare.checked) shape = 'square';
+
+      selectedTable.dataset.name = name;
+      selectedTable.dataset.capacity = String(capacity);
+      selectedTable.dataset.section = section;
+      selectedTable.dataset.shape = shape;
+
+      const label = selectedTable.querySelector('.fp-table-label');
+      if (label) label.textContent = name;
+
+      selectedTable.classList.toggle('fp-table--round', shape === 'round');
+      selectedTable.classList.toggle('fp-table--square', shape !== 'round');
+    });
+
+    cancelBtn && cancelBtn.addEventListener('click', () => {
+      if (selectedTable) showDetails(selectedTable);
+      else clearDetails();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initFloorplan);
 })();

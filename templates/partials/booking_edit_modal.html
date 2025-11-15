@@ -1,0 +1,70 @@
+<!-- Edit Booking Modal -->
+<div class="st-modal st-modal-hidden" id="editBookingModal" aria-hidden="true">
+  <div class="st-modal-backdrop" id="editBookingModalBackdrop"></div>
+  <div class="st-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="editBookingTitle">
+    <div class="st-modal-header">
+      <h2 id="editBookingTitle" class="st-modal-title">Edit booking</h2>
+      <button type="button" class="st-modal-close" id="closeEditBookingModal" aria-label="Close">×</button>
+    </div>
+
+    <form id="editBookingForm" method="post" class="st-modal-body st-form-vertical">
+      <input type="hidden" name="booking_index" id="edit-booking-index">
+      <input type="hidden" name="original_date" id="edit-original-date">
+
+      <div class="st-form-row">
+        <label for="edit-name">
+          Guest name
+          <input type="text" name="name" id="edit-name" class="st-input" required>
+        </label>
+      </div>
+
+      <div class="st-form-row st-form-row-2">
+        <label for="edit-party-size">
+          Party size
+          <input type="number" name="party_size" id="edit-party-size" class="st-input" min="1" required>
+        </label>
+
+        <label for="edit-table-id">
+          Table
+          <select name="table_id" id="edit-table-id" class="st-select">
+            {% for table in tables %}
+              <option value="{{ table.id }}">{{ table.name or ("Table " ~ table.id) }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+
+      <div class="st-form-row">
+        <label for="edit-date">
+          Date
+          <input type="date" name="date" id="edit-date" class="st-input" required
+                 min="{{ today.isoformat() }}" max="{{ max_booking_date.isoformat() }}">
+        </label>
+      </div>
+
+      <div class="st-form-row st-form-row-2">
+        <label for="edit-start-time">
+          Start time
+          <input type="time" name="start_time" id="edit-start-time" class="st-input" required>
+        </label>
+
+        <label for="edit-end-time">
+          End time
+          <input type="time" name="end_time" id="edit-end-time" class="st-input" required>
+        </label>
+      </div>
+
+      <div class="st-form-row">
+        <label for="edit-notes">
+          Notes
+          <textarea name="notes" id="edit-notes" class="st-textarea" rows="3"></textarea>
+        </label>
+      </div>
+
+      <div class="st-modal-footer">
+        <button type="button" class="st-button st-button-ghost" id="cancelEditBooking">Cancel</button>
+        <button type="submit" class="st-button st-button-primary">Save changes</button>
+      </div>
+    </form>
+  </div>
+</div>

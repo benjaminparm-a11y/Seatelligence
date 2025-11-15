@@ -1,0 +1,48 @@
+{% if bookings %}
+  {% for booking in bookings %}
+    <tr style="border-bottom: 1px solid var(--st-border);" data-booking-index="{{ booking.booking_index }}">
+      <td style="padding: 8px;">{{ booking.name | title }}</td>
+      <td style="padding: 8px;">{{ booking.party_size }}</td>
+      <td style="padding: 8px;">{{ booking.start_time }}</td>
+      <td style="padding: 8px;">{{ booking.end_time }}</td>
+      <td style="padding: 8px;">{{ booking.table_id }}</td>
+      <td class="booking-actions-cell" style="padding: 8px;">
+        {% if booking.notes and booking.notes.strip() %}
+          <button 
+            type="button" 
+            class="booking-notes-btn" 
+            data-notes="{{ booking.notes | e }}">
+            Notes
+          </button>
+        {% endif %}
+        <button
+          type="button"
+          class="booking-edit-btn"
+          data-booking-index="{{ booking.booking_index }}"
+          data-name="{{ booking.name | e }}"
+          data-party-size="{{ booking.party_size }}"
+          data-date="{{ booking.date }}"
+          data-start-time="{{ booking.start_time }}"
+          data-end-time="{{ booking.end_time }}"
+          data-table-id="{{ booking.table_id }}"
+          data-notes="{{ booking.notes | default('') | e }}">
+          Edit
+        </button>
+        <button 
+          type="button"
+          class="booking-icon-btn booking-delete-btn"
+          data-booking-index="{{ booking.booking_index }}"
+          data-booking-name="{{ booking.name | e }}"
+          data-booking-date="{{ booking.date }}"
+          title="Cancel booking"
+          aria-label="Cancel booking">
+          ✕
+        </button>
+      </td>
+    </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan="6" style="padding: 12px; text-align: center; color: var(--stl-gray);">No bookings found</td>
+  </tr>
+{% endif %}

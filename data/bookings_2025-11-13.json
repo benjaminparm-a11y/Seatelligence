@@ -1,0 +1,68 @@
+[
+    {
+        "name": "Sup",
+        "party_size": 2,
+        "date": "2025-11-13",
+        "start_time": "17:30",
+        "end_time": "20:00",
+        "table_id": 1
+    },
+    {
+        "name": "cecilie",
+        "party_size": 4,
+        "date": "2025-11-13",
+        "start_time": "19:00",
+        "end_time": "21:30",
+        "table_id": 3
+    },
+    {
+        "name": "Klor",
+        "party_size": 4,
+        "date": "2025-11-13",
+        "start_time": "18:00",
+        "end_time": "20:30",
+        "table_id": 2
+    },
+    {
+        "name": "Herman",
+        "party_size": 6,
+        "date": "2025-11-13",
+        "start_time": "18:00",
+        "end_time": "20:30",
+        "table_id": 5
+    },
+    {
+        "name": "Beate",
+        "party_size": 2,
+        "date": "2025-11-13",
+        "start_time": "18:00",
+        "end_time": "20:30",
+        "table_id": 4
+    },
+    {
+        "name": "Kent",
+        "party_size": 4,
+        "date": "2025-11-13",
+        "start_time": "21:00",
+        "end_time": "23:30",
+        "table_id": 4
+    },
+    {
+        "name": "Cecilie Paulsar",
+        "party_size": 3,
+        "date": "2025-11-13",
+        "start_time": "20:30",
+        "end_time": "23:00",
+        "table_id": 5,
+        "notes": "test Test"
+    },
+    {
+        "name": "Ben Ben",
+        "party_size": 1,
+        "date": "2025-11-13",
+        "start_time": "20:30",
+        "end_time": "23:00",
+        "table_id": 1,
+        "notes": "s"
+    }
+]

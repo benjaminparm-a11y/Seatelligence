@@ -5,8 +5,15 @@ import json
 import os
 from datetime import datetime, date
 
-TABLES_FILE = "tables.json"
-CONSTRAINTS_FILE = "restaurant_constraints.json"
+# Define base paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+
+# Make sure the data directory exists
+os.makedirs(DATA_DIR, exist_ok=True)
+
+TABLES_FILE = os.path.join(DATA_DIR, "tables.json")
+CONSTRAINTS_FILE = os.path.join(DATA_DIR, "restaurant_constraints.json")
 
 tables = []
 bookings = []
@@ -18,7 +25,7 @@ def load_constraints():
     """Load restaurant constraints from restaurant_constraints.json"""
     global constraints
     if os.path.exists(CONSTRAINTS_FILE):
-        with open(CONSTRAINTS_FILE, "r") as f:
+        with open(CONSTRAINTS_FILE, "r", encoding="utf-8") as f:
             constraints = json.load(f)
         room = constraints.get("room", {})
         print(f"📐 Loaded constraints: {room.get('name', 'Room')} ({room.get('width', 0)}x{room.get('height', 0)})")
@@ -39,24 +46,54 @@ def load_constraints():
 
 def save_constraints():
     """Save constraints back to restaurant_constraints.json"""
-    with open(CONSTRAINTS_FILE, "w") as f:
+    with open(CONSTRAINTS_FILE, "w", encoding="utf-8") as f:
         json.dump(constraints, f, indent=4)
 
 
 def load_tables():
     """Load tables from tables.json"""
     global tables
+    ensure_default_tables()  # Create default tables if missing
     if os.path.exists(TABLES_FILE):
-        with open(TABLES_FILE, "r") as f:
+        with open(TABLES_FILE, "r", encoding="utf-8") as f:
             tables = json.load(f)
     else:
         tables = []
-        print("⚠️ No tables.json found. Currently no tables are defined.")
+
+
+def ensure_default_tables():
+    """
+    Ensure tables.json exists under DATA_DIR with at least one table.
+    If missing or empty, create a default layout.
+    """
+    # If file exists and has tables, do nothing
+    if os.path.exists(TABLES_FILE):
+        try:
+            with open(TABLES_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, list) and len(data) > 0:
+                return
+        except Exception:
+            # fallthrough to recreate file
+            pass
+
+    print("⚠️ No tables.json found or file empty. Creating default tables layout in", TABLES_FILE)
+
+    default_tables = [
+        {"id": 1, "seats": 2, "x": 50,  "y": 50,  "width": 60, "height": 60},
+        {"id": 2, "seats": 2, "x": 150, "y": 50,  "width": 60, "height": 60},
+        {"id": 3, "seats": 4, "x": 50,  "y": 150, "width": 80, "height": 60},
+        {"id": 4, "seats": 4, "x": 170, "y": 150, "width": 80, "height": 60},
+        {"id": 5, "seats": 6, "x": 300, "y": 100, "width": 100, "height": 60},
+    ]
+
+    with open(TABLES_FILE, "w", encoding="utf-8") as f:
+        json.dump(default_tables, f, indent=2)
 
 
 def save_tables():
     """Persist tables to tables.json"""
-    with open(TABLES_FILE, "w") as f:
+    with open(TABLES_FILE, "w", encoding="utf-8") as f:
         json.dump(tables, f, indent=4)
 
 
@@ -213,7 +250,7 @@ def get_bookings_filename(booking_date):
     else:
         # datetime.date object
         date_str = booking_date.strftime("%Y-%m-%d")
-    return f"bookings_{date_str}.json"
+    return os.path.join(DATA_DIR, f"bookings_{date_str}.json")
 
 
 def load_bookings(booking_date=None):
@@ -227,7 +264,7 @@ def load_bookings(booking_date=None):
     filename = get_bookings_filename(booking_date)
     
     if os.path.exists(filename):
-        with open(filename, "r") as f:
+        with open(filename, "r", encoding="utf-8") as f:
             bookings = json.load(f)
     else:
         bookings = []
@@ -240,7 +277,7 @@ def save_bookings():
         return
     
     filename = get_bookings_filename(current_date)
-    with open(filename, "w") as f:
+    with open(filename, "w", encoding="utf-8") as f:
         json.dump(bookings, f, indent=4)
 
 

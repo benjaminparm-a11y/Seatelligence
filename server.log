@@ -1,0 +1,32 @@
+ * Serving Flask app 'api'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5003
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [15/Nov/2025 02:26:21] "[32mGET / HTTP/1.1[0m" 302 -
+127.0.0.1 - - [15/Nov/2025 02:26:26] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2025 02:26:26] "[36mGET /static/js/booking_edit.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:26] "[36mGET /static/css/theme.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:26] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:26] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:26] "[36mGET /static/img/logo-orca.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:26] "[36mGET /static/js/time_slots.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:26] "[36mGET /static/css/theme.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:26] "[36mGET /static/js/time_slots.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:26] "[36mGET /static/img/logo-new.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:26] "GET /tables HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2025 02:26:29] "GET /?date=2025-11-16 HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2025 02:26:29] "[36mGET /static/favicon-16x16.png?v=5 HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:29] "[36mGET /static/css/theme.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:29] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:29] "[36mGET /static/js/time_slots.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:29] "[36mGET /static/js/booking_edit.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:29] "GET /tables HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2025 02:26:29] "[36mGET /static/img/logo-new.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:30] "GET /?date=2025-11-15 HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2025 02:26:30] "[36mGET /static/css/theme.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:30] "[36mGET /static/js/time_slots.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:30] "[36mGET /static/js/booking_edit.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:30] "[36mGET /static/img/logo-new.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:30] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Nov/2025 02:26:30] "GET /tables HTTP/1.1" 200 -

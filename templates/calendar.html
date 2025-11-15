@@ -1,104 +1,129 @@
 {% extends "base.html" %}
 
-{% block title %}Seatelligence — Calendar{% endblock %}
+{% block title %}Calendar · Seatelligence{% endblock %}
 
-{% block page_header %}
-<div class="d-flex align-items-center justify-content-between">
-  <div>
-    <h1 class="stl-page-title mb-0">Calendar</h1>
-    <p class="text-muted small mb-0">
-      Timeline view for reservations on {{ selected_date.strftime("%A %d %B %Y") }}.
-    </p>
+{% block content %}
+<div class="st-page">
+  <div class="st-page-header">
+    <div class="st-page-title">
+      <h1>Calendar</h1>
+      <p class="st-page-subtitle">Daily timeline by table</p>
+    </div>
+
+    <!-- Date navigation: same pattern as Bookings page -->
+    <div class="bookings-header-main">
+      <div class="booking-date-nav">
+        <a href="{{ url_for('calendar', date=prev_date.isoformat()) }}"
+           class="booking-date-nav-btn"
+           aria-label="Previous day">
+          ←
+        </a>
+
+        <span class="booking-date-label">
+          {{ current_date.strftime("%A %d %B %Y") }}
+        </span>
+
+        <a href="{{ url_for('calendar', date=next_date.isoformat()) }}"
+           class="booking-date-nav-btn"
+           aria-label="Next day">
+          →
+        </a>
+
+        <form method="get"
+              action="{{ url_for('calendar') }}"
+              class="booking-date-picker-form">
+          <label class="booking-date-picker">
+            <span class="booking-date-picker-icon" aria-hidden="true">📅</span>
+            <input
+              type="date"
+              name="date"
+              value="{{ current_date.isoformat() }}"
+              class="booking-date-picker-input"
+              onchange="this.form.submit()">
+          </label>
+        </form>
+      </div>
+    </div>
   </div>
 
-  <form method="get" action="{{ url_for('calendar') }}" class="d-flex align-items-center gap-2">
-    <input type="hidden" name="date" id="calendarDateInput" value="{{ selected_date.isoformat() }}">
+  <div class="st-page-body">
+    <section class="st-card st-card-main calendar-card">
+      <div class="st-card-body calendar-body">
+        <div class="calendar-scroll">
+          <table class="calendar-grid">
+            <thead>
+              <tr>
+                <th class="calendar-table-col">Table</th>
+                {% for slot in time_slots %}
+                  <th class="calendar-time-col">
+                    {{ slot.strftime("%H:%M") }}
+                  </th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in rows %}
+                <tr>
+                  <th class="calendar-table-cell">
+                    {{ row.table.name or ("Table " ~ row.table.id) }}
+                  </th>
 
-    <button
-      type="submit"
-      name="date"
-      value="{{ prev_date.isoformat() }}"
-      class="btn btn-outline-secondary btn-sm"
-    >
-      ‹ Previous day
-    </button>
-
-    <input
-      type="date"
-      name="date"
-      value="{{ selected_date.isoformat() }}"
-      class="form-control form-control-sm"
-      style="max-width: 180px;"
-    >
-
-    <button type="submit" class="btn btn-outline-secondary btn-sm">Go</button>
-
-    <button
-      type="submit"
-      name="date"
-      value="{{ today.isoformat() }}"
-      class="btn btn-primary btn-sm"
-    >
-      Today
-    </button>
-
-    <button
-      type="submit"
-      name="date"
-      value="{{ next_date.isoformat() }}"
-      class="btn btn-outline-secondary btn-sm"
-    >
-      Next day ›
-    </button>
-  </form>
+                  {% for cell in row.cells %}
+                    {% if cell.type == "booking" %}
+                      <td class="calendar-booking-cell"
+                          colspan="{{ cell.colspan }}"
+                          data-table-id="{{ row.table.id }}"
+                          data-slot-index="{{ cell.slot_index }}">
+                        <div class="calendar-booking-pill"
+                             draggable="true"
+                             data-booking-index="{{ cell.booking_index }}"
+                             data-table-id="{{ row.table.id }}"
+                             data-date="{{ current_date.isoformat() }}"
+                             title="{{ cell.booking.notes or cell.label }}">
+                          <span class="calendar-booking-label">{{ cell.label }}</span>
+                          <button
+                            type="button"
+                            class="calendar-edit-btn"
+                            title="Edit booking"
+                            aria-label="Edit booking"
+                            data-booking-index="{{ cell.booking_index }}"
+                            data-name="{{ cell.name | e }}"
+                            data-party-size="{{ cell.party_size }}"
+                            data-date="{{ current_date.isoformat() }}"
+                            data-start-time="{{ cell.start_time }}"
+                            data-end-time="{{ cell.end_time }}"
+                            data-table-id="{{ row.table.id }}"
+                            data-notes='{{ (cell.notes or "") | e }}'>
+                            ✎
+                          </button>
+                        </div>
+                      </td>
+                    {% else %}
+                      <td class="calendar-empty-cell"
+                          colspan="{{ cell.colspan }}"
+                          data-table-id="{{ row.table.id }}"
+                          data-slot-index="{{ cell.slot_index }}"
+                          data-date="{{ current_date.isoformat() }}">
+                      </td>
+                    {% endif %}
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
 </div>
 {% endblock %}
 
-{% block page_content %}
-<section class="stl-card stl-card-large">
-  <div class="stl-card-header d-flex justify-content-between align-items-center">
-    <h2 class="stl-card-title mb-0">Bookings timeline</h2>
-    <span class="stl-card-meta">
-      {{ bookings|length }} booking{{ bookings|length != 1 and 's' or '' }} on this day
-    </span>
-  </div>
-
-  {% if bookings %}
-    <div class="stl-timeline">
-      {% for b in bookings %}
-        <div class="stl-timeline-item status-{{ b.status|default('pending') }}">
-          <div class="stl-timeline-time">
-            {{ b.time or b.start_time or '—' }}
-          </div>
-          <div class="stl-timeline-dot"></div>
-          <div class="stl-timeline-content">
-            <div class="stl-timeline-header">
-              <span class="stl-timeline-title">
-                {{ b.name }} ({{ b.people or b.party_size or b.seats or '?' }} pax)
-              </span>
-              <span class="stl-badge stl-badge-{{ b.status|default('pending') }}">
-                {{ b.status|capitalize if b.status else 'Pending' }}
-              </span>
-            </div>
-            <div class="stl-timeline-meta">
-              Table {{ b.table_number or b.table_id or 'unassigned' }}{% if b.phone %} • {{ b.phone }}{% endif %}
-            </div>
-            {% if b.notes %}
-              <div class="stl-timeline-notes">
-                {{ b.notes }}
-              </div>
-            {% endif %}
-            <div class="stl-timeline-actions">
-              <a href="{{ url_for('index') }}" class="stl-link-sm">Manage in Bookings</a>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="stl-empty-state stl-empty-state-padded">
-      No bookings for this day.
-    </div>
-  {% endif %}
-</section>
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/calendar_drag_drop.js') }}"></script>
+  
+  <!-- Include edit booking modal -->
+  {% include "partials/booking_edit_modal.html" %}
+  
+  <!-- Include edit booking JS -->
+  <script src="{{ url_for('static', filename='js/booking_edit.js') }}"></script>
 {% endblock %}
