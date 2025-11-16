@@ -95,12 +95,14 @@
         "start_time": "18:15",
         "end_time": "20:45",
         "duration": 150,
-        "table_id": 6,
-        "notes": "",
+        "table_id": 1,
+        "notes": "Lars er allergisk mot skalldyr",
         "status": "confirmed",
         "tables": [
-            6
-        ]
+            1
+        ],
+        "name": "Lars",
+        "party_size": 2
     },
     {
         "id": 27,
@@ -111,12 +113,14 @@
         "start_time": "18:30",
         "end_time": "21:00",
         "duration": 150,
-        "table_id": 7,
-        "notes": "",
+        "table_id": 1,
         "status": "confirmed",
         "tables": [
-            7
-        ]
+            1,
+            2
+        ],
+        "name": "Lars",
+        "party_size": 2
     },
     {
         "id": 28,

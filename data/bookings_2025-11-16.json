@@ -10,7 +10,10 @@
         "duration": 60,
         "table_id": 4,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            4
+        ]
     },
     {
         "id": 2,
@@ -23,7 +26,10 @@
         "duration": 90,
         "table_id": 8,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            8
+        ]
     },
     {
         "id": 3,
@@ -36,7 +42,10 @@
         "duration": 60,
         "table_id": 4,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            4
+        ]
     },
     {
         "id": 4,
@@ -49,7 +58,10 @@
         "duration": 90,
         "table_id": 1,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            1
+        ]
     },
     {
         "id": 5,
@@ -62,7 +74,10 @@
         "duration": 60,
         "table_id": 1,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            1
+        ]
     },
     {
         "id": 6,
@@ -75,7 +90,10 @@
         "duration": 60,
         "table_id": 3,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            3
+        ]
     },
     {
         "id": 7,
@@ -88,7 +106,10 @@
         "duration": 60,
         "table_id": 9,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            9
+        ]
     },
     {
         "id": 8,
@@ -101,7 +122,10 @@
         "duration": 60,
         "table_id": 8,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            8
+        ]
     },
     {
         "id": 9,
@@ -114,7 +138,10 @@
         "duration": 90,
         "table_id": 4,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            4
+        ]
     },
     {
         "id": 10,
@@ -127,7 +154,10 @@
         "duration": 120,
         "table_id": 3,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            3
+        ]
     },
     {
         "id": 11,
@@ -140,7 +170,10 @@
         "duration": 120,
         "table_id": 4,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            4
+        ]
     },
     {
         "id": 12,
@@ -153,7 +186,10 @@
         "duration": 90,
         "table_id": 4,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            4
+        ]
     },
     {
         "id": 13,
@@ -166,7 +202,10 @@
         "duration": 60,
         "table_id": 2,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            2
+        ]
     },
     {
         "id": 14,
@@ -179,7 +218,10 @@
         "duration": 90,
         "table_id": 6,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            6
+        ]
     },
     {
         "id": 15,
@@ -192,7 +234,10 @@
         "duration": 90,
         "table_id": 9,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            9
+        ]
     },
     {
         "id": 16,
@@ -205,7 +250,10 @@
         "duration": 60,
         "table_id": 3,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            3
+        ]
     },
     {
         "id": 17,
@@ -218,7 +266,10 @@
         "duration": 120,
         "table_id": 5,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            5
+        ]
     },
     {
         "id": 18,
@@ -231,7 +282,10 @@
         "duration": 90,
         "table_id": 6,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            6
+        ]
     },
     {
         "id": 19,
@@ -244,7 +298,10 @@
         "duration": 60,
         "table_id": 10,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            10
+        ]
     },
     {
         "id": 20,
@@ -257,6 +314,30 @@
         "duration": 90,
         "table_id": 1,
         "notes": "",
-        "status": "confirmed"
+        "status": "confirmed",
+        "tables": [
+            1
+        ]
+    },
+    {
+        "name": "Cecilie Paulsen",
+        "party_size": 3,
+        "date": "2025-11-16",
+        "start_time": "17:30",
+        "end_time": "20:00",
+        "table_id": 10,
+        "notes": "Notes",
+        "tables": [
+            10
+        ]
+    },
+    {
+        "name": "Cecilie Paulsen",
+        "party_size": 3,
+        "date": "2025-11-16",
+        "start_time": "17:30",
+        "end_time": "20:00",
+        "table_id": 11,
+        "notes": "Notes"
     }
 ]

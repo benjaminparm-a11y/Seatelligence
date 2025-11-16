@@ -1048,14 +1048,15 @@ def create_booking():
         date_str = request.form.get("date")
         first_name = request.form.get("first_name", "").strip()
         last_name = request.form.get("last_name", "").strip()
-        
+        phone = request.form.get("phone", "").strip()
+
         # Title-case both names
         first_name = first_name.title()
         last_name = last_name.title()
-        
+
         # Combine into full name
         name = f"{first_name} {last_name}".strip()
-        
+
         party_size = request.form.get("people")
         start_time = request.form.get("start_time")
         notes = request.form.get("notes", "").strip() or None
@@ -1083,6 +1084,7 @@ def create_booking():
         name = data["name"].strip().title() if isinstance(data["name"], str) else data["name"]
         party_size = data["party_size"]
         start_time = data["start_time"]
+        phone = (data.get("phone", "") or "").strip()
         notes = data.get("notes", "").strip() or None
     
     # Validate booking date (must be today or future, max 2 months ahead)
@@ -1148,6 +1150,8 @@ def create_booking():
         "end_time": end_time,
         "table_id": table["id"]
     }
+    if phone:
+        new_booking["phone"] = phone
     
     # Add notes if provided
     if notes:
@@ -1461,7 +1465,8 @@ def edit_booking(date_str, booking_index):
             "date": booking.get("date", original_date),
             "start_time": booking.get("start_time", ""),
             "end_time": booking.get("end_time", ""),
-            "notes": booking.get("notes", "")
+            "notes": booking.get("notes", ""),
+            "phone": booking.get("phone", ""),
         })
 
     # Read form fields
@@ -1472,6 +1477,7 @@ def edit_booking(date_str, booking_index):
     start_time_str = request.form.get("start_time", "").strip()
     end_time_str = request.form.get("end_time", "").strip()
     notes = request.form.get("notes", "").strip()
+    phone = request.form.get("phone", "").strip()
     
     # Basic validation
     if not name or not new_date_str or not start_time_str or not end_time_str:
@@ -1525,6 +1531,11 @@ def edit_booking(date_str, booking_index):
         booking["notes"] = notes
     elif "notes" in booking:
         del booking["notes"]
+    # Phone is optional; set if provided else remove to keep JSON tidy
+    if phone:
+        booking["phone"] = phone
+    elif "phone" in booking:
+        del booking["phone"]
     
     # If date changed, move booking to new date file
     if new_date_str != original_date:

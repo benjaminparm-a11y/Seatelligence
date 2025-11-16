@@ -6,7 +6,7 @@
     <div class="stl-page-title">Bookings</div>
   </div>
   <div>
-    <button id="openCreateBookingModalHeader" class="btn btn-primary btn-sm">+ New booking</button>
+    <button id="newBookingButton" class="btn btn-primary btn-sm">+ New booking</button>
   </div>
 </div>
 {% endblock %}
@@ -517,7 +517,8 @@
               data-end-time="${b.end_time || ''}"
               data-table-id="${b.table_id || ''}"
               data-tables='${tablesJSON.replace(/'/g, '&#39;')}'
-              data-notes="${escapedNotesForEdit}">
+              data-notes="${escapedNotesForEdit}"
+              data-phone="${(b.phone || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;')}">
               Edit
             </button>
           `;

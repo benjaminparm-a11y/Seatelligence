@@ -78,16 +78,17 @@
       </div>
     </div>
 
-    <!-- Create Booking Modal -->
-    <div id="createBookingModal" class="st-modal st-modal-hidden" aria-hidden="true">
-      <div class="st-modal-backdrop"></div>
-      <div class="st-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="createBookingTitle">
-        <div class="st-modal-header">
-          <h2 id="createBookingTitle" class="st-modal-title">Create booking</h2>
-          <button type="button" class="st-modal-close" id="closeCreateBookingModal" aria-label="Close">×</button>
+    <!-- Create booking modal overlay -->
+    <div id="createBookingOverlay" class="modal-overlay">
+      <div id="createBookingModal" class="modal-card">
+        <div class="modal-header">
+          <h2>Create booking</h2>
+          <button type="button"
+                  class="modal-close-btn"
+                  id="createModalCloseBtn" aria-label="Close">&times;</button>
         </div>
 
-        <form id="createBookingForm" class="st-modal-body st-form-vertical">
+        <form id="createBookingForm" method="POST" action="{{ url_for('create_booking') }}" class="st-form-vertical">
           <div class="st-form-row st-form-row-2">
             <label for="cb_first_name">First name
               <input type="text" id="cb_first_name" name="first_name" class="st-input" required>
@@ -96,6 +97,15 @@
             <label for="cb_last_name">Last name
               <input type="text" id="cb_last_name" name="last_name" class="st-input" required>
             </label>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone number</label>
+            <input type="tel"
+                   class="form-control"
+                   id="phone"
+                   name="phone"
+                   placeholder="+47 123 45 678">
           </div>
 
           <div class="st-form-row">
@@ -123,13 +133,11 @@
             <textarea id="cb_notes" name="notes" rows="3" class="st-input"></textarea>
           </div>
 
-          <div class="st-modal-footer">
-            <button type="button" class="st-button st-button-ghost" id="cancelCreateBooking">Cancel</button>
-            <button
-              type="button"
-              id="saveBookingButton"
-              class="st-button st-button-primary"
-            >
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="createCancelButton">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" id="saveBookingButton">
               Save booking
             </button>
           </div>

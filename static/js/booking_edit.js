@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const dateInput = document.getElementById("edit-date");
   const startTimeInput = document.getElementById("edit-start-time");
   const endTimeInput = document.getElementById("edit-end-time");
+  const phoneInput = document.getElementById("edit_phone");
   const tableCheckboxes = document.querySelectorAll('.table-checkbox');  // Changed to checkboxes
   const notesInput = document.getElementById("edit-notes");
 
@@ -42,6 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
     startTimeInput.value = data.startTime || "";
     endTimeInput.value = data.endTime || "";
     notesInput.value = data.notes || "";
+    if (phoneInput) {
+      phoneInput.value = data.phone || "";
+    }
 
     // Set table selections (checkboxes)
     const tablesToSelect = data.tables || (data.tableId ? [data.tableId] : []);
@@ -147,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
           tables: tables,
           tableId: tableIdAttr ? parseInt(tableIdAttr, 10) : null,  // For backward compatibility
           notes: btn.getAttribute("data-notes") || "",
+          phone: btn.getAttribute("data-phone") || "",
         });
       });
     });

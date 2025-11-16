@@ -1,152 +1,67 @@
+
 (function(){
-  const modal = document.getElementById('createBookingModal');
-  if (!modal) return;
-
-  const openButtons = [
-    document.getElementById('openCreateBookingModalHeader')
-  ].filter(Boolean);
-
-  const closeButton = document.getElementById('closeCreateBookingModal');
-  const cancelButton = document.getElementById('cancelCreateBooking');
-  const backdrop = modal.querySelector('.st-modal-backdrop');
+  // Create booking modal using overlay pattern (matches Edit modal behavior)
+  const createOverlay = document.getElementById('createBookingOverlay');
+  const createModalCloseBtn = document.getElementById('createModalCloseBtn');
+  const newBookingButton = document.getElementById('newBookingButton');
+  const cancelButton = document.getElementById('createCancelButton');
   const form = document.getElementById('createBookingForm');
 
-  function openCreateBookingModal(){
-    modal.classList.remove('st-modal-hidden');
-    modal.classList.add('st-modal-open');
-    const firstInput = modal.querySelector('input, textarea, select');
+  if (!createOverlay || !form) return;
+
+  function openCreateModal() {
+    createOverlay.classList.add('is-visible');
+    const firstInput = createOverlay.querySelector('input, textarea, select');
     if (firstInput) firstInput.focus();
   }
 
-  function closeCreateBookingModal(){
-    modal.classList.remove('st-modal-open');
-    modal.classList.add('st-modal-hidden');
+  function closeCreateModal() {
+    createOverlay.classList.remove('is-visible');
     if (form) form.reset();
-    
-    // Clear time slots
+
+    // Reset time slots helper
     const slotsContainer = document.getElementById('time-slots');
     if (slotsContainer) {
       slotsContainer.innerHTML = "<div class='st-time-help'>Select a date and number of people first.</div>";
     }
   }
 
-  // When opening the modal, prefill date/time from sidebar filters if available
-  openButtons.forEach(btn => {
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
-
-      const sidebarDate = document.getElementById("date-input")?.value;
-      const sidebarTime = document.getElementById("time-filter")?.value;
-
-      const cbDate = document.getElementById("cb_date");
-      const cbStart = document.getElementById("cb_start_time");
-
+  // Open button handler
+  if (newBookingButton) {
+    newBookingButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      // Prefill date from sidebar if available and trigger slot load
+      const sidebarDate = document.getElementById('date-input')?.value;
+      const cbDate = document.getElementById('cb_date');
       if (cbDate && sidebarDate) {
         cbDate.value = sidebarDate;
-        // Trigger change event to load time slots
         cbDate.dispatchEvent(new Event('change'));
       }
-      
-      // Note: We no longer prefill start time directly - user must select from slots
-
-      openCreateBookingModal();
-    });
-  });
-
-  [closeButton, cancelButton, backdrop].forEach(el => {
-    if (!el) return;
-    el.addEventListener('click', function(e){
-      e.preventDefault();
-      closeCreateBookingModal();
-    });
-  });
-
-  document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape' && modal.classList.contains('st-modal-open')){
-      closeCreateBookingModal();
-    }
-  });
-
-  const saveButton = document.getElementById("saveBookingButton");
-
-  async function createBookingFromModal() {
-    const firstName = document.getElementById("cb_first_name")?.value?.trim() || "";
-    const lastName = document.getElementById("cb_last_name")?.value?.trim() || "";
-    const date = document.getElementById("cb_date")?.value || "";
-    const startTime = document.getElementById("cb_start_time")?.value || "";
-    const people = document.getElementById("cb_people")?.value || "";
-    const notes = document.getElementById("cb_notes")?.value || "";
-
-    if (!date || !firstName || !lastName || !people || !startTime) {
-      if (typeof window.showStatus === "function") {
-        window.showStatus("Please fill out all required fields", "error");
-      } else {
-        alert("Please fill out all required fields");
-      }
-      return;
-    }
-
-    // Title-case names
-    const firstNameTitle = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-    const lastNameTitle = lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
-    const fullName = `${firstNameTitle} ${lastNameTitle}`;
-
-    try {
-      const res = await fetch("/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          date: date,
-          name: fullName,
-          party_size: Number(people),
-          start_time: startTime,
-          // end_time omitted – backend will compute +2.5h
-          // table_id omitted – backend auto-assigns
-          notes: notes || null
-        })
-      });
-
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        const msg = data.error || res.statusText || "Failed to create booking";
-        if (typeof window.showStatus === "function") {
-          window.showStatus("Error: " + msg, "error");
-        } else {
-          alert("Error: " + msg);
-        }
-        return;
-      }
-
-      // Success: close modal, show message, refresh bookings
-      closeCreateBookingModal();
-
-      if (typeof window.showStatus === "function") {
-        window.showStatus(
-          `Booking created for ${fullName}, party of ${people}`,
-          "success"
-        );
-      }
-
-      if (typeof window.loadBookings === "function") {
-        window.loadBookings();
-      }
-    } catch (err) {
-      console.error("Create booking error:", err);
-      if (typeof window.showStatus === "function") {
-        window.showStatus("Failed to create booking: " + err.message, "error");
-      } else {
-        alert("Failed to create booking: " + err.message);
-      }
-    }
-  }
-
-  if (saveButton) {
-    saveButton.addEventListener("click", function (e) {
-      e.preventDefault();
-      createBookingFromModal();
+      openCreateModal();
     });
   }
+
+  // Close buttons
+  if (createModalCloseBtn) {
+    createModalCloseBtn.addEventListener('click', () => closeCreateModal());
+  }
+  if (cancelButton) {
+    cancelButton.addEventListener('click', (e) => { e.preventDefault(); closeCreateModal(); });
+  }
+
+  // Only close when clicking the dark background
+  createOverlay.addEventListener('click', (event) => {
+    if (event.target === createOverlay) {
+      closeCreateModal();
+    }
+  });
+
+  // Close on Escape when visible
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && createOverlay.classList.contains('is-visible')) {
+      closeCreateModal();
+    }
+  });
 })();
 
 // ============================================================
