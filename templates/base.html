@@ -85,7 +85,11 @@
           <h2>Create booking</h2>
           <button type="button"
                   class="modal-close-btn"
-                  id="createModalCloseBtn" aria-label="Close">&times;</button>
+                  id="createModalCloseBtn" aria-label="Close">
+            <span class="gradient"></span>
+            <span class="label">&times;</span>
+            <span class="transition"></span>
+          </button>
         </div>
 
         <form id="createBookingForm" method="POST" action="{{ url_for('create_booking') }}" class="st-form-vertical">
@@ -135,10 +139,14 @@
 
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" id="createCancelButton">
-              Cancel
+              <span class="gradient"></span>
+              <span class="label">Cancel</span>
+              <span class="transition"></span>
             </button>
             <button type="submit" class="btn btn-primary" id="saveBookingButton">
-              Save booking
+              <span class="gradient"></span>
+              <span class="label">Save booking</span>
+              <span class="transition"></span>
             </button>
           </div>
         </form>

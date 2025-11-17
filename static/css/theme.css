@@ -3,6 +3,150 @@
    New Brand Palette - 2025
    ============================================================ */
 
+/* ============================================================
+   UIVERSE BUTTON GLOBAL STYLE
+   ============================================================ */
+
+/* GLOBAL RESET: give every <button> this Uiverse style */
+button {
+  font-size: 17px;
+  padding: 1em 2.7em;
+  font-weight: 500;
+  background: #1f2937; /* Slate 800 */
+  color: white;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.6em;
+  cursor: pointer;
+}
+
+/* Size adjustments for compact buttons */
+button.btn-sm,
+button.booking-edit-btn,
+button.booking-notes-btn,
+button.booking-icon-btn,
+button.calendar-edit-btn,
+button.modal-close-btn {
+  font-size: 0.85rem;
+  padding: 0.4em 0.9em;
+}
+
+button.st-toggle-btn {
+  font-size: 0.9rem;
+  padding: 0.5em 1rem;
+}
+
+/* Uiverse decorative layers */
+button .gradient {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 0.6em;
+  margin-top: -0.25em;
+  background-image: linear-gradient(
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.3)
+  );
+}
+
+button .label {
+  position: relative;
+  top: -1px;
+  pointer-events: none;
+}
+
+button .transition {
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-duration: 500ms;
+  background-color: rgba(16, 185, 129, 0.6);
+  border-radius: 9999px;
+  width: 0;
+  height: 0;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+button:hover .transition {
+  width: 14em;
+  height: 14em;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* Button color overrides to preserve existing styles */
+button.btn-primary,
+button.st-button-primary {
+  background: var(--stl-navy);
+  color: var(--stl-blue);
+}
+
+button.btn-secondary,
+button.st-button-ghost {
+  background: transparent;
+  border: 1px solid var(--st-border);
+  color: var(--stl-navy);
+}
+
+button.btn-outline-secondary {
+  background: transparent;
+  border: 1px solid var(--stl-gray-lighter);
+  color: var(--stl-gray-dark);
+}
+
+button.btn-outline-danger {
+  background: transparent;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+}
+
+button.modal-close-btn {
+  background: transparent;
+  color: var(--stl-gray-dark);
+  padding: 0.3em 0.6em;
+}
+
+button.booking-icon-btn {
+  background: transparent;
+  color: var(--stl-gray);
+}
+
+button.booking-notes-btn {
+  background: var(--stl-cream);
+  border: 1px solid var(--st-border);
+  color: var(--stl-navy);
+}
+
+button.calendar-edit-btn {
+  background: transparent;
+  color: var(--stl-navy);
+  padding: 0.15em 0.3em;
+}
+
+button.st-toggle-btn {
+  background: transparent;
+  color: var(--stl-navy);
+  border: none;
+  border-right: 1px solid var(--stl-navy);
+}
+
+button.st-toggle-btn:last-child {
+  border-right: none;
+}
+
+button.st-toggle-btn.is-active {
+  background: var(--stl-navy);
+  color: var(--stl-blue);
+}
+
 :root {
   /* ===== NEW SEATELLIGENCE BRAND PALETTE ===== */
   --stl-navy: #0C1C2C;          /* Primary dark navy */

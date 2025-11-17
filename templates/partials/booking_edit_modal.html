@@ -3,7 +3,11 @@
   <div id="editBookingModal" class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editBookingTitle">
     <div class="modal-header">
       <h2 id="editBookingTitle">Edit booking</h2>
-      <button type="button" class="modal-close-btn" id="closeEditBookingModal" aria-label="Close">&times;</button>
+      <button type="button" class="modal-close-btn" id="closeEditBookingModal" aria-label="Close">
+        <span class="gradient"></span>
+        <span class="label">&times;</span>
+        <span class="transition"></span>
+      </button>
     </div>
 
     <form id="editBookingForm" method="post" class="st-form-vertical">
@@ -75,8 +79,16 @@
       </div>
 
       <div class="st-modal-footer">
-        <button type="button" class="st-button st-button-ghost" id="cancelEditBooking">Cancel</button>
-        <button type="submit" class="st-button st-button-primary">Save changes</button>
+        <button type="button" class="st-button st-button-ghost" id="cancelEditBooking">
+          <span class="gradient"></span>
+          <span class="label">Cancel</span>
+          <span class="transition"></span>
+        </button>
+        <button type="submit" class="st-button st-button-primary">
+          <span class="gradient"></span>
+          <span class="label">Save changes</span>
+          <span class="transition"></span>
+        </button>
       </div>
     </form>
   </div>

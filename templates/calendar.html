@@ -95,7 +95,9 @@
                             data-table-id="{{ row.table.id }}"
                             data-tables='{{ cell.booking.tables | tojson | e }}'
                             data-notes='{{ (cell.notes or "") | e }}'>
-                            ✎
+                            <span class="gradient"></span>
+                            <span class="label">✎</span>
+                            <span class="transition"></span>
                           </button>
                         </div>
                       </td>
@@ -127,7 +129,11 @@
     <div id="editBookingModal" class="modal-card">
       <div class="modal-header">
         <h2>Edit booking</h2>
-        <button type="button" class="modal-close-btn" id="closeEditBookingModal">&times;</button>
+        <button type="button" class="modal-close-btn" id="closeEditBookingModal">
+          <span class="gradient"></span>
+          <span class="label">&times;</span>
+          <span class="transition"></span>
+        </button>
       </div>
       <form id="editBookingForm" method="POST" action="">
         <!-- Existing form fields: guest name, party size, table, date, time, notes -->
@@ -174,8 +180,16 @@
           </label>
         </div>
         <div class="st-modal-footer">
-          <button type="button" class="st-button st-button-ghost" id="cancelEditBooking">Cancel</button>
-          <button type="submit" class="st-button st-button-primary">Save changes</button>
+          <button type="button" class="st-button st-button-ghost" id="cancelEditBooking">
+            <span class="gradient"></span>
+            <span class="label">Cancel</span>
+            <span class="transition"></span>
+          </button>
+          <button type="submit" class="st-button st-button-primary">
+            <span class="gradient"></span>
+            <span class="label">Save changes</span>
+            <span class="transition"></span>
+          </button>
         </div>
       </form>
     </div>

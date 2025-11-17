@@ -338,6 +338,19 @@
         "start_time": "17:30",
         "end_time": "20:00",
         "table_id": 11,
-        "notes": "Notes"
+        "notes": "Notes",
+        "tables": [
+            11
+        ]
+    },
+    {
+        "name": "Api Test",
+        "party_size": 2,
+        "date": "2025-11-16",
+        "start_time": "17:00",
+        "end_time": "19:00",
+        "table_id": 2,
+        "phone": "+47 999 11 222",
+        "notes": "Created via test snippet"
     }
 ]

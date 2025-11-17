@@ -12,7 +12,9 @@
             type="button" 
             class="booking-notes-btn" 
             data-notes="{{ booking.notes | e }}">
-            Notes
+            <span class="gradient"></span>
+            <span class="label">Notes</span>
+            <span class="transition"></span>
           </button>
         {% endif %}
         <button
@@ -28,7 +30,9 @@
           data-tables='{{ booking.tables | tojson | e }}'
           data-notes="{{ booking.notes | default('') | e }}"
           data-phone="{{ booking.phone | default('') | e }}">
-          Edit
+          <span class="gradient"></span>
+          <span class="label">Edit</span>
+          <span class="transition"></span>
         </button>
         <button 
           type="button"
@@ -38,7 +42,9 @@
           data-booking-date="{{ booking.date }}"
           title="Cancel booking"
           aria-label="Cancel booking">
-          ✕
+          <span class="gradient"></span>
+          <span class="label">✕</span>
+          <span class="transition"></span>
         </button>
       </td>
     </tr>
